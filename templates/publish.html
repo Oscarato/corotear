@@ -1,0 +1,66 @@
+<ion-view title="publish" hide-nav-bar="true" id="page10" >
+  <ion-content padding="true" class="manual-ios-statusbar-padding">
+    <div id="publish-markdown27" class="show-list-numbers-and-dots">
+      <p style="color:#000000;">
+        <strong>Imagenes</strong>
+      </p>
+    </div>
+    <ion-list id="publish-list9">
+      <div class="card">
+        <div class="item item-text-wrap">
+          <div style="margin: 0px; line-height: 250px; background-color: rgb(232, 235, 239); text-align: center;">
+            <i class="icon ion-image" style="font-size: 64px; color: rgb(136, 136, 136); vertical-align: middle;"></i>
+          </div>
+        </div>
+      </div>
+    </ion-list>
+    <form>
+      <div class="list">
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">¿Qué es?</span>
+          <input type="text"  >
+        </label>
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Detalle</span>
+         <textarea id="textarea1" class="materialize-textarea"></textarea>
+        </label>
+        <label class="item item-input item-stacked-label">
+          <ion-item class="range range-positive" id="publish-range5">Range
+            <input type="range" value="50" min="0" max="100" step="1">
+          </ion-item>
+        </label>
+
+        <label class="item item-input item-select">
+          <div>
+            <div class="input-label">
+              Categoria
+            </div>
+            <select>
+              <option>Categoria 1</option>
+              <option selected>Categoria 2</option>
+              <option>Categoria 3</option>
+            </select>
+          </div>
+        </label>
+      
+        <label class="item item-input item-stacked-label">
+          <ion-toggle toggle-class="toggle-positive" id="publish-toggle3">Regalar</ion-toggle>
+          <ion-toggle toggle-class="toggle-positive" id="publish-toggle3">Intercambiar</ion-toggle>
+        </label>
+ 
+      </div>
+      <div id="publish-button-bar4" class="button-bar">
+        <button id="publish-button14" style="margin: 0 0 50px 0;" class="button button-stable  button-block">Cancelar</button>
+        <button id="publish-button16" style="margin: 0 0 50px 0;" class="button button-positive  button-block">Guardar</button>
+      </div>
+
+    </form>
+
+  </ion-content>
+</ion-view>
+
+<script>
+
+  $('#textarea1').val('New Text');
+  $('#textarea1').trigger('autoresize');
+</script>

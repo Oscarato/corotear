@@ -1,0 +1,24 @@
+{
+  "name": "coroteo",
+  "authors": [
+    "unipanamaricana.edu.co"
+  ],
+  "description": "app to change your korotos",
+  "main": "index.html",
+  "keywords": [
+    "koroto"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "ng-cordova-oauth": "^0.3.0"
+  }
+}
