@@ -1,36 +1,64 @@
 <ion-view title="main" hide-nav-bar="true" id="page11" >
-  <ion-content padding="true" class="manual-ios-statusbar-padding">
-    <h1 id="main-heading5" style="color:#000000;text-align:center;">Mis Corotos</h1>
-    
+    <ion-content padding="true" class="manual-ios-statusbar-padding">
+        <h2 id="main-heading5" class="blue-text text-darken-2 center-align">Mis Corotos</h2>
+        
         <div class="col s12">
           <ul class="tabs">
-            <li class="tab col s3"><a href="#test1" style="color: white;">Coroteo</a></li>
-            <li class="tab col s3"><a class="active" href="#test2" style="color: white;">Corotié</a></li>
+            <li class="tab col s3"><a ng:click="coroteo = false" class="active"  style="color: white;">Coroteo</a></li>
+            <li class="tab col s3"><a ng:click="coroteo = true"   style="color: white;">Corotié</a></li>
           </ul>
         </div>
         <!-- Coroteo -->
-        <div id="test1" class="col s12">
-          <h4>Coroteo</h4>
-          <div style="margin: 0px; line-height: 250px; background-color: rgb(232, 235, 239); text-align: center;">
-            <i class="icon ion-image" style="font-size: 64px; color: rgb(136, 136, 136); vertical-align: middle;"></i>
-          </div>
-          <div id="main-markdown37" class="show-list-numbers-and-dots">
-            <p style="color:#FF0000;">Estado:
-              <strong>Sin Confirmar</strong>
-            </p>
-          </div>
+        <div id="test1" class="col s12" ng:show="!coroteo">
+            <h4>Coroteo</h4>
+
+            <div style="overflow: hidden;overflow-y: scroll; overflow-x: hidden; height: 330px;">
+
+                <div class="row" style="background: #e2e4e7;" ng:repeat="coroto in myCorotos">
+                    <div class="col s12">
+                        <div class="col s6" style="text-align: center; ">
+                            <img width="100" src="{{coroto.image}}">
+                        </div>
+
+                        <div class="col s6">
+                            <label for="icon_telephone">Nombre: {{coroto.name}}</label><br>
+                            <label for="icon_telephone">Descripcion: {{coroto.description}}</label><br>
+                            <label for="icon_telephone">Estado: Sin confirmar</label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
         </div>
         <!-- Corotíe -->
-        <div id="test2" class="col s12">
-          <h4>Corotié</h4>
-          <div style="margin: 0px; line-height: 250px; background-color: rgb(232, 235, 239); text-align: center;">
-            <i class="icon ion-image" style="font-size: 64px; color: rgb(136, 136, 136); vertical-align: middle;"></i>
-          </div>
-          <div id="main-markdown37" class="show-list-numbers-and-dots">
-            <p style="color:#FF0000;">Estado:
-              <strong>Cancelado</strong>
-            </p>
-          </div>
+        <div id="test2" class="col s12" ng:show="coroteo">
+            <h4>Corotié</h4>
+            <div style="overflow: hidden;overflow-y: scroll; overflow-x: hidden; height: 330px;">
+
+                <div class="row" style="background: #e2e4e7;" ng:repeat="pro in myProductos">
+                    <div class="col s12">
+                        <div class="col s6" style="text-align: center; ">
+                            <img width="100" src="{{pro.images[0]}}">
+                            <label for="icon_telephone">Nombre: {{pro.name}}</label><br>
+                            <label for="icon_telephone">Descripcion: {{pro.detail}}</label><br>
+                        </div>
+
+                        <div class="col s6">
+                            <div class="chip">
+                              <img src="http://desdeguate.com/wp-content/uploads/2011/02/cristy-mexico-2.jpg" alt="Contact Person">
+                              Jenny Doe
+                            </div>
+
+                            <div class="chip">
+                              <img src="http://www.fotos-top.com/items/perfil-de-mujeres-22364.jpg" alt="Contact Person">
+                              Luisa Doe
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
         </div>
         
         

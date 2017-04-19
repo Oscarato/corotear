@@ -16,7 +16,7 @@ module.directive("items",
                 });
 
                 $("#slidermain").on("touchstart mousedown", function(event1) {
-                    console.log(event1);
+                    
                     event1.preventDefault
                     elem.$apply(function() {
                         elem.touchStart = event1.originalEvent.touches ? event1.originalEvent.touches[0].pageX : event1.originalEvent.pageX
@@ -94,40 +94,31 @@ module.directive("items",
                             }, 300);
                         }
                     }
+                    //window.location = "#/Page/product_detail?";
                     console.log("touchended" + elem.touchLast);
 
                 });
-
-                console.log(elem);
             },
-            controller: ["$scope", "$http",
-                function($scope, $http) {
-
+            controller: ["$scope", "$http", "$rootScope",
+                function($scope, $http, $rootScope) {
+                    
                     $scope.likedElements = [];
 
                     $scope.dislikedElements =[];
 
-                    $scope.elements = [{
-                        name: "Zuchini",
-                        image: "img/pane/pane1.jpg"
-                    }, {
-                        name: "Pepper",
-                        image: "img/pane/pane2.jpg"
-                    }, {
-                        name: "Mushrooms",
-                        image: "img/pane/pane3.jpg"
-                    }, {
-                        name: "Cat",
-                        image: "img/pane/pane4.jpg"
-                    }, {
-                        name: "Dodo",
-                        image: "img/pane/pane5.jpg"
-                    }];
+                    if(!$rootScope.myCorotos){
+                        $rootScope.myCorotos = []; 
+                    }
+                    
+
+                    //se obtuvo la data del rootScope desde el controlador de buscar
+                    $scope.elements = $rootScope.products.Data;
 
 
                   $scope.likeElement= function(){
                     //add elements to stack of liked elements
                     var got_element = $scope.elements.pop();
+                    $rootScope.myCorotos.push(got_element);
                     $scope.likedElements.push(got_element);
                     //ad remove from normal
              

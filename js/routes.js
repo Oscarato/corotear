@@ -92,17 +92,18 @@ angular.module('app.routes', [])
     }
   })
 
-  .state('accessController', {
+  .state('tabsController.login_access', {
     url: '/access',
     views: {
       'tab2': {
         templateUrl: 'templates/login_access.html',
-        controller: 'publishCtrl'
+        controller: 'accessController'
       }
     }
   })
+  
 
-$urlRouterProvider.otherwise('/login')
+$urlRouterProvider.otherwise('/Page/access')
 
   
 

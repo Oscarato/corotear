@@ -5,11 +5,25 @@
       <div>
         <img src="img/D0FtcLnjQZm4JM7eP065_koro_logo.png" style="display: block; width: 150px; height: auto; margin-left: auto; margin-right: auto;">
       </div>
+
+      <div class="g-signin2" data-onsuccess="onSignIn"></div>
       <h2 id="login-heading1" style="color:#000000;text-align:center;">Accede</h2>
       
-      <a ui-sref="tabsController.QuQuieresHacer" id="login-button3" class="button button-assertive  button-block">Google</a>
-      <a  id="login-button4" class="button button-positive  button-block"  scope="public_profile,email"  ng-click="login()" >Facebook??</a>
+      <a id="login-button3" class="button button-assertive  button-block" ng-click="googleSignIn()">Google</a>
+      
+      <a  id="login-button4" class="button button-positive  button-block" ng-click="facebookSignIn()" >Facebook</a>
 
     </form>
   </ion-content>
 </ion-view>
+
+<script id="my-modal.html" type="text/ng-template">
+  <ion-modal-view>
+    <ion-header-bar>
+      <h1 class="title">Login</h1>
+    </ion-header-bar>
+    <ion-content>
+      <iframe src="https://www.facebook.com/dialog/oauth?client_id=1269683693086737&redirect_uri=localhost&response_type=token&scope=email"></iframe>
+    </ion-content>
+  </ion-modal-view>
+</script>

@@ -1,19 +1,35 @@
 <ion-view title="buscar" hide-nav-bar="true" id="page7" >
   <ion-content padding="true" class="manual-ios-statusbar-padding">
-    <h1 id="buscar-heading3" style="color:#000000;text-align:center;">Buscar</h1>
-    <div class="list card" id="buscar-card22">
-      <ion-item class="item-avatar positive" id="buscar-list-item18" ui-sref="tabsController.productos">
-        <h2positive>Categoria</h2positive>
-      </ion-item>
-      <ion-item class="item-avatar positive" id="buscar-list-item20" ui-sref="tabsController.productos">
-        <h2positive>Categoria</h2positive>
-      </ion-item>
-    </div>
-    <h3 id="buscar-heading4" style="color:#000000;">Mejores categorias</h3>
-    <ion-list id="buscar-list6">
-      <ion-item id="buscar-list-item25" ui-sref="tabsController.productos">Item 1</ion-item>
-      <ion-item id="buscar-list-item26" ui-sref="tabsController.productos">Item 2</ion-item>
-      <ion-item id="buscar-list-item27">Item 3</ion-item>
-    </ion-list>
+    <h2 id="buscar-heading3" class="blue-text text-darken-2 center-align">Buscar</h2>
+
+      <div class="row">
+          
+        <div class="col s12" style="height: 380px;overflow: scroll;margin: 2px;border: 1px solid #bbddf9;">
+
+            <div class="input-field col s6" ng:repeat="cat in categories">
+                <div class="card">
+                    <div class="card-image waves-effect waves-block waves-light">
+                        <!--<img class="activator" width="30" src="img/categorias/tecnology.png">-->
+                    </div>
+                    <div class="card-content" style="text-align: center">
+                        <span >{{cat.Txt_Categoria}}</span>
+                        <p>
+                            <input ng:click="addCategory(cat.id)" type="checkbox" id="test{{$index}}" />
+                            <label for="test{{$index}}"></label>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col s12" style ="position: absolute;">
+            <a class="btn blue" style="margin: 0 0 40px 0;" ng:click="search()">Buscar</a>
+        </div>
+      </div>
+      
   </ion-content>
 </ion-view>

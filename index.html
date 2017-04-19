@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <meta name="google-signin-client_id" content="1093647862720-23pht8koukq0bqvp1m4d4vs61hsalf3j.apps.googleusercontent.com ">
     <link rel="icon" 
       type="image/png" 
       href="favicon.ico">
@@ -20,13 +21,21 @@
     
     <link href="lib/ionic/css/ionic.css" rel="stylesheet">
     <link href="bower_components/ng-swippy/ngswippy.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
-    
-		<link rel="stylesheet" href="lib/ionic/css/styles/lib/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" href="lib/ionic/css/styles/lib/bootstrap.min.css">
+    <link rel="stylesheet" href="lib/materialize.min.css">
     
 		<link rel="stylesheet" href="lib/ionic/css/styles/cardsmodule.css">
+    <link rel="stylesheet" href="bower_components/mdr-angular-file/dist/mdr-file.css">
+    <link rel="stylesheet" href="lib/ez-alert.min.css">
 
     <style type="text/css">
+
+      html{
+        font-size:16px;
+      }
+
       .platform-ios .manual-ios-statusbar-padding{
         padding-top:20px; 
       }
@@ -55,6 +64,11 @@
       }
     </style>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="bower_components/mdr-angular-file/dist/mdr-file.js"></script>
+    <script src="js/ez-alert.min.js"></script>
+    <script src="js/ez-alert-tpl.js"></script>
+    
+
     <script src="js/app.js"></script>
     <script src="js/controllers.js"></script>
     <script src="js/routes.js"></script>
@@ -68,8 +82,15 @@
     <script src="bower_components/ng-cordova-oauth/dist/ng-cordova-oauth.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-materialize/0.2.2/angular-materialize.min.js"></script>
-
+    
 		<script src="js/cardsmodule.js"></script>
+
+    <script src="https://apis.google.com/js/api.js"></script>
+
+    <script src="js/openfb.js"></script>
+
+
+
     <!-- Only required for Tab projects w/ pages in multiple tabs 
     <script src="lib/ionicuirouter/ionicUIRouter.js"></script>
     -->
