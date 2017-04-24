@@ -190,7 +190,7 @@ angular.module('app.controllers', [])
 
     $scope.googleSignIn = function() {
         $ionicLoading.show({
-        template: 'Ingresando...'
+            template: 'Ingresando...'
         });
 
         window.plugins.googleplus.login(
@@ -257,15 +257,20 @@ angular.module('app.controllers', [])
 
 })
    
-.controller('QuQuieresHacerCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams) {
+.controller('QuQuieresHacerCtrl', function ($scope, $stateParams, $location) {
 
+    $scope.goInterChang = function(){
+        $location.path('Page/page10');
+        $scope.$apply()
+    }
 
-}])
+    $scope.goSearch = function(){
+        $location.path('Page/buscar');
+    }
+
+})
    
-.controller('buscarCtrl', function ($scope, $stateParams, $http, url_base, $rootScope, $location) {
+.controller('buscarCtrl', function ($scope, $stateParams, $http, url_base, $rootScope, $location, $ionicLoading) {
 
     var categories_selected = []
 
@@ -285,8 +290,6 @@ function ($scope, $stateParams) {
         }
         
     }
-
-    console.log(url_base.route)
 
     $scope.search = function(){
 
@@ -325,15 +328,336 @@ function ($scope, $stateParams) {
         "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n  <soap:Body>\r\n    <GetCategories xmlns=\"http://tempuri.org/\">\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n    </GetCategories>\r\n  </soap:Body>\r\n</soap:Envelope>"
     }
 
+    $ionicLoading.show({
+        template: 'Cargando...'
+    });
+
     $http(settings).then(function(data){
         $scope.categories = JSON.parse(data.data.split('<')[0]);
+        $ionicLoading.hide();
     }, function(err){
         console.log(err)
+        $ionicLoading.hide();
     });   
 
 })
    
 .controller('productosCtrl', function ($scope, $stateParams,$rootScope, $http, url_base) {
+    var images;
+    var Rating;
+
+    $scope.selecImg = function(elem){
+
+        var req = {
+            method: 'POST',
+            url: 'http://example.com',
+            headers: {
+                'Content-Type': 'json'
+            },
+                data: { token: localStorage.accessToken, id_product: elem.id }
+            }
+
+        $http(req).then(function(data){
+            console.log(data)
+        }, function(err){
+            console.log(err)
+        });
+
+        //esto es de pruebas
+        if(elem.id == 1){
+            images = ['img/categorias/prueba/Silla-de-ruedas-usada.jpg', 'img/categorias/prueba/Silla-de-ruedas-usada2.jpg', 'img/categorias/prueba/Silla-de-ruedas-usada3.jpg'];
+            Rating = 2;
+        }else{
+            images = ['img/categorias/prueba/gafasusadas.jpg', 'img/categorias/prueba/gafasusadas2.jpg', 'img/categorias/prueba/gafasusadas3.jpg'];
+            Rating = 4;
+        }
+
+        $rootScope.details = {
+            Response: true,
+            Data: {
+                    "name_owner": "usuario de prueba",
+                    "id_user": "234",
+                    "Images": images,
+                    "Name_product": elem.name,
+                    "Id_product":elem.id,
+                    "Detail": "esta es una descripcion",
+                    "Category_name": "muebles",
+                    "Rating": Rating
+                }
+        };
+
+        window.location = "#/Page/product_detail";
+        return;
+    }
+
+})
+   
+.controller('producto_detalleCtrl', function ($scope, $stateParams,$rootScope, url_base) {
+    
+    console.log(url_base)
+    console.log($rootScope.details)
+
+})
+   
+.controller('publishCtrl', function ($scope, $ionicModal, EzAlert, $location, $rootScope, url_base, $http, $ionicLoading) {
+
+    //variables
+    var images;
+    var rating = 1;
+
+    //** esto es para las estrellas del ranking */
+    $scope.rating = 0;
+    $scope.ratings = [{
+        current: 1,
+        max: 5
+    }];
+
+    if(!localStorage.images){
+        images = {'images':[]};
+        localStorage.images = JSON.stringify(images);
+    }
+    
+    //aqui guardamos temporalmente nuestros datos
+    if(!$rootScope.myProductos){
+        $rootScope.myProductos = []
+    }
+
+    $scope.catchRating = function(r){
+        rating = r.current;
+    }
+
+    $scope.getSelectedRating = function (rat) {
+        return false;
+    }
+    
+    $scope.setMinrate= function(){
+        $scope.ratings = [{
+            current: 1,
+            max: 5
+        }];
+    }
+    
+    $scope.setMaxrate= function(){
+      $scope.ratings = [{
+        current: 5,
+        max: 5
+      }];
+    }
+    //**** end ranking */
+
+    //* probando imagenes */
+    $scope.images_up = []
+
+    document.addEventListener("deviceready", init, false);
+
+    function init() {
+        $("#addPicture").on("touchend", selPic);
+        $imagesDiv = $("#images");
+    }
+
+    function selPic() {
+        navigator.camera.getPicture(function(f) {
+            $scope.images_up.push("data:image/jpeg;base64," + f);
+            $scope.$apply();
+        }, function(e) {
+            alert("Error, check console.");
+            console.dir(e);
+        }, {
+            quality: 50,
+            destinationType: Camera.DestinationType.DATA_URL
+        });
+        
+    }
+    
+    //capturamos las imagenes
+    $scope.getImages = function(){
+        
+        window.imagePicker.getPictures(
+            function(results) {
+                for (var i = 0; i < results.length; i++) {
+                    $scope.images_up.push(results[i]);
+                }
+            }, function (error) {
+                console.log('Error: ' + error);
+            }
+        );
+    }
+
+    //funcion de prueba para convertir json a xml
+    function to_xml(json_data){
+        var str_xml = "<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n  <soap:Body>\r\n    <add_ult xmlns=\"http://tempuri.org/\">\r\n    \t";
+        var x2js = new X2JS();
+        var jsonObj = json_data;
+        var xmlAsStr = x2js.json2xml_str( jsonObj );
+        str_xml = str_xml + xmlAsStr + "\r\n    </add_ult>\r\n  </soap:Body>\r\n</soap:Envelope>";
+        return {create:str_xml, origin:xmlAsStr};
+    }
+
+    //funcrion que convierte xml en json
+    function to_json(xml){
+        console.log(xml)
+        var x2js = new X2JS();
+        var xmlText = xml;
+        var jsonObj = x2js.xml_str2json( xmlText );
+        return {create:jsonObj, origin:jsonObj};
+    }
+
+    //** aqui empezamos a armar los datos */
+    $scope.saveData = function(){
+        
+        if($scope.images_up.length < 1){
+            //return EzAlert.error('Por favor adjunta alguna imagen del articulo.');
+        }
+        
+        var data = {
+            Id_user: 1,
+            Images: $scope.images_up[0],
+            Name: document.getElementById('what').value,
+            Detail: $('#detail').val(),
+            category: $('#category').val(),
+            Rating: rating,
+            give: $scope.give,
+            change: !$scope.give,
+            category_change: $('#category').val()
+        }
+
+        $ionicLoading.show({
+            template: 'Enviando...'
+        });
+        
+        var data_rec = to_xml(data);
+        data_rec = data_rec.create;
+
+        //traemos las categorias
+        var settings = {
+            "crossDomain": true,
+            "url": url_base.api+"?op=add_ult",
+            "method": "POST",
+            "headers": {
+                "content-type": "text/xml",
+                "cache-control": "no-cache"
+            },
+            "data": data_rec
+        }
+
+        $http(settings).then(function(response){
+            $rootScope.myProductos.push(data);
+            EzAlert.success('Articulo cargado correctamente.');
+            $ionicLoading.hide();
+            $scope.cancel('Page/page11');
+        }, function(err){
+            console.log(data)
+            $rootScope.myProductos.push(data);
+            EzAlert.error('Algo sucedio y no se pudo cargar el articulo.');
+            $ionicLoading.hide();
+            $scope.cancel('Page/page11');
+        });
+    }
+
+    //traemos las categorias
+    var settings = {
+        "crossDomain": true,
+        "url": url_base.api+"?op=GetCategories",
+        "method": "POST",
+        "headers": {
+            "content-type": "text/xml",
+            "cache-control": "no-cache"
+        },
+        "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n  <soap:Body>\r\n    <GetCategories xmlns=\"http://tempuri.org/\">\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n    </GetCategories>\r\n  </soap:Body>\r\n</soap:Envelope>"
+    }
+
+    $ionicLoading.show({
+        template: 'Cargando...'
+    });
+
+    $http(settings).then(function(data){
+        console.log(data)
+        $ionicLoading.hide();
+        $scope.categories = JSON.parse(data.data.split('<')[0]);
+    }, function(err){
+        console.log(err)
+        $ionicLoading.hide();
+    });    
+
+    $scope.give = true;
+    
+    //permite borrar el almacenamiento del storage y regresar al '¿que quieres hacer?'
+    $scope.cancel = function(ruta){
+        $scope.images_up = [];
+        document.getElementById('what').value = '';
+        document.getElementById('detail').value = '';
+        document.getElementById('category').value = '';
+        localStorage.removeItem('images');
+        $scope.ratings = [{
+            current: 1,
+            max: 5
+        }];
+        if(ruta){
+            $location.path(ruta);
+        }else{
+            $location.path('Page/inicio');
+        }
+        
+        return;
+    }
+})
+   
+.controller('mainCtrl', function ($scope, $stateParams, $rootScope) {
+
+    console.log($rootScope.myCorotos)
+
+    if($rootScope.myProductos){
+        $rootScope.myProductos[0].interesed = [
+            {
+                name:"Jenny Doe",
+                picture:"http://desdeguate.com/wp-content/uploads/2011/02/cristy-mexico-2.jpg",
+                description:"Me interesan las antiguedades",
+                id:1
+            },
+            {
+                name:"Luisa Doe",
+                picture:"http://www.fotos-top.com/items/perfil-de-mujeres-22364.jpg",
+                description:"Tengo una fundación para niños de estrato 0 y 1",
+                id:2
+            }
+        ]
+    }
+
+    console.log($rootScope.myProductos)
+
+    //para controlar el modal
+    $scope.show_modal = function(id_ele, data){
+
+        // Get the modal
+        var modal = document.getElementById(id_ele);
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close_other")[0];
+
+        modal.style.display = "block";
+
+        //datos
+        $scope.interesed = data;
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    }
+
+    $scope.close_modal= function(id_ele){
+        var modal = document.getElementById(id_ele);
+        modal.style.display = "none";
+    }
+
+    //para ir a los detalles
     var images;
     var Rating;
 
@@ -380,162 +704,6 @@ function ($scope, $stateParams) {
         return;
     }
 
-})
-   
-.controller('producto_detalleCtrl', function ($scope, $stateParams,$rootScope, url_base) {
-    
-    console.log(url_base)
-    console.log($rootScope.details)
-
-})
-   
-.controller('publishCtrl', function ($scope, $ionicModal, EzAlert, $location, $rootScope, url_base, $http) {
-
-    //variables
-    var images;
-    var rating = 1;
-
-    //** esto es para las estrellas del ranking */
-    $scope.rating = 0;
-    $scope.ratings = [{
-        current: 1,
-        max: 5
-    }];
-
-    if(!localStorage.images){
-        images = {'images':[]};
-        localStorage.images = JSON.stringify(images);
-    }
-    
-    //aqui guardamos temporalmente nuestros datos
-    if(!$rootScope.myProductos){
-        $rootScope.myProductos = []
-    }
-    
-
-    $scope.getSelectedRating = function (rat) {
-        console.log(rating);
-        rating = rat
-    }
-    
-    $scope.setMinrate= function(){
-        $scope.ratings = [{
-            current: 1,
-            max: 5
-        }, {
-            current: 1,
-            max: 5
-        }];
-    }
-    
-    $scope.setMaxrate= function(){
-      $scope.ratings = [{
-        current: 5,
-        max: 5
-      }, {
-          current: 5,
-          max: 5
-      }];
-    }
-    //**** end ranking */
-
-    /** modal */
-
-    $ionicModal.fromTemplateUrl('my-modal.html', {
-        scope: $scope,
-        animation: 'slide-in-up'
-    }).then(function(modal) {
-        $scope.modal = modal;
-    });
-
-    $scope.openModal = function() {
-        console.log('hola')
-        $scope.modal.show();
-    };
-    
-    $scope.closeModal = function() {
-        $scope.modal.hide();
-    };
-    // Cleanup the modal when we're done with it!
-    $scope.$on('$destroy', function() {
-        $scope.modal.remove();
-    });
-    // Execute action on hide modal
-    $scope.$on('modal.hidden', function() {
-    // Execute action
-    });
-    // Execute action on remove modal
-    $scope.$on('modal.removed', function() {
-        // Execute action
-    });
-
-    $scope.images_up = []
-    //capturamos las imagenes
-    $scope.getImages = function(){
-        
-        window.imagePicker.getPictures(
-            function(results) {
-                for (var i = 0; i < results.length; i++) {
-                    $scope.images_up.push(results[i]);
-                }
-            }, function (error) {
-                console.log('Error: ' + error);
-            }
-        );
-    }
-
-    //** aqui empezamos a armar los datos */
-    $scope.saveData = function(){
-        
-        var data = {
-            id_user: 1,
-            images: $scope.images_up,
-            name: document.getElementById('what').value,
-            detail: $('#detail').val(),
-            category: $('#category').val(),
-            rating: rating,
-            give: $scope.give,
-            change: !$scope.give
-        }
-        
-        $rootScope.myProductos.push(data);
-        EzAlert.success('Articulo cargado correctamente.');
-
-        $scope.cancel();
-    }
-
-    var settings = {
-        "crossDomain": true,
-        "url": url_base.api+"?op=GetCategories",
-        "method": "POST",
-        "headers": {
-            "content-type": "text/xml",
-            "cache-control": "no-cache"
-        },
-        "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n  <soap:Body>\r\n    <GetCategories xmlns=\"http://tempuri.org/\">\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n    </GetCategories>\r\n  </soap:Body>\r\n</soap:Envelope>"
-    }
-
-    $http(settings).then(function(data){
-        $scope.categories = data;
-    }, function(err){
-        console.log(err)
-    });    
-
-    $scope.give = true;
-    
-    //permite borrar el almacenamiento del storage y regresar al '¿que quieres hacer?'
-    $scope.cancel = function(){
-        localStorage.removeItem('images');
-        $location.path('Page/inicio');
-        return;
-    }
-})
-   
-.controller('mainCtrl', function ($scope, $stateParams, $rootScope) {
-
-    console.log($rootScope.myCorotos)
-
-    console.log($rootScope.myProductos)
 
 })
    

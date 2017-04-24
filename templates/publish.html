@@ -5,15 +5,12 @@
     <form>
       <div class="list">
 
-        <label class="item item-input item-stacked-label" style="padding:0" ng:click="getImages()">
+        <label class="item item-input item-stacked-label" style="padding:0" >
             <span class="input-label">Capturar Imagenes</span><br><br>
-            <div>
-                Toque aqui para subir imagenes
-            </div>
-            
-            <div ng:repeat="img in images_up">
-              {{img}}
-              <img src="img">
+            <button class="btn" id="addPicture">Presiona aquí</button>
+            <!-- images here -->
+            <div id="images">
+              <div style="display: inline-block;padding: 2px;margin: 2px" ng:repeat="im in images_up"><img src="{{im}}" width="50"></div>
             </div>
         </label>
         <br>
@@ -29,6 +26,7 @@
         <label class="item item-input item-select">
             <span class="input-label">Categoria</span>
                 <div >
+                  
                     <select class="form-control" style="height: 100%;border: none;border-bottom: 1px solid #b8b8b8;border-right: 1px solid #b8b8b8;" id="category">
                         <option value=""></option>
                         <option ng:repeat="cat in categories" value="{{cat.id}}">{{cat.Txt_Categoria}}</option>
@@ -42,7 +40,7 @@
 
             <div class=col-md-12>
                 <div ng:repeat="rating in ratings">
-                    <div star-rating rating-value="rating.current" max="rating.max" on-rating-selected="getSelectedRating(rating)"></div> <span>{{rating.current}} /
+                    <div star-rating rating-value="rating.current" max="rating.max" ng:click="catchRating(rating)" on-rating-selected="getSelectedRating(rating)"></div> <span>{{rating.current}} /
                     {{rating.max}}</span> ({{rating.max}} es excelente)
                 </div>
             </div>

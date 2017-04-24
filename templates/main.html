@@ -3,7 +3,7 @@
         <h2 id="main-heading5" class="blue-text text-darken-2 center-align">Mis Corotos</h2>
         
         <div class="col s12">
-          <ul class="tabs">
+          <ul class="tabs" style="z-index: 1;">
             <li class="tab col s3"><a ng:click="coroteo = false" class="active"  style="color: white;">Coroteo</a></li>
             <li class="tab col s3"><a ng:click="coroteo = true"   style="color: white;">Corotié</a></li>
           </ul>
@@ -15,9 +15,9 @@
             <div style="overflow: hidden;overflow-y: scroll; overflow-x: hidden; height: 330px;">
 
                 <div class="row" style="background: #e2e4e7;" ng:repeat="coroto in myCorotos">
-                    <div class="col s12">
+                    <div class="col s12" >
                         <div class="col s6" style="text-align: center; ">
-                            <img width="100" src="{{coroto.image}}">
+                            <img width="100" src="{{coroto.image}}" ng:click="selecImg(coroto)">
                         </div>
 
                         <div class="col s6">
@@ -36,23 +36,18 @@
             <h4>Corotié</h4>
             <div style="overflow: hidden;overflow-y: scroll; overflow-x: hidden; height: 330px;">
 
-                <div class="row" style="background: #e2e4e7;" ng:repeat="pro in myProductos">
+                <div class="row" style="background: #e2e4e7;" ng:repeat="pro in myProductos track by $index" >
                     <div class="col s12">
                         <div class="col s6" style="text-align: center; ">
-                            <img width="100" src="{{pro.images[0]}}">
-                            <label for="icon_telephone">Nombre: {{pro.name}}</label><br>
-                            <label for="icon_telephone">Descripcion: {{pro.detail}}</label><br>
+                            <img width="100" src="{{pro.Images[0]}}">
+                            <label for="icon_telephone">Nombre: {{pro.Name}}</label><br>
+                            <label for="icon_telephone">Descripcion: {{pro.Detail}}</label><br>
                         </div>
 
                         <div class="col s6">
-                            <div class="chip">
-                              <img src="http://desdeguate.com/wp-content/uploads/2011/02/cristy-mexico-2.jpg" alt="Contact Person">
-                              Jenny Doe
-                            </div>
-
-                            <div class="chip">
-                              <img src="http://www.fotos-top.com/items/perfil-de-mujeres-22364.jpg" alt="Contact Person">
-                              Luisa Doe
+                            <div class="chip" ng:repeat="int in pro.interesed" ng:click="show_modal('myModal', int)">
+                              <img src="{{int.picture}}" alt="Contact Person">
+                              {{int.name}}
                             </div>
                         </div>
                     </div>
@@ -61,6 +56,104 @@
             </div>
         </div>
         
+
+        <!-- The Modal -->
+        <div id="myModal" class="modal_other">
+            <!-- Modal content -->
+            <div class="modal_other-content">
+                <div class="modal-header">
+                    <span class="close_other">&times;</span>
+                    <h5>Persona Interesada</h5>
+                </div>
+                <div class="modal-body">
+                    <p> <img src="{{interesed.picture}}" width="50"  ></p>
+                    <p><b>Nombre</b>: {{interesed.name}}</p>
+                    <p><b>Descripcion</b>: {{interesed.description}}</p>
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col s12">
+                            <div class="col s6"><button class="btn red" ng:click="close_modal('myModal')">Declinar</button></div>
+                            <div class="col s6"><button class="btn" ng:click="close_modal('myModal')">Obsequiar</button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         
   </ion-content>
 </ion-view>
+
+<style>
+
+/* The Modal (background) */
+.modal_other {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: #387ef5; /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* modal_other Content/Box */
+.modal_other-content {
+    position: relative;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+
+/* Add Animation */
+@-webkit-keyframes animatetop {
+    from {top:-300px; opacity:0} 
+    to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+}
+
+/* The Close Button */
+.close_other {
+    color: white;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close_other:hover,
+.close_other:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-header {
+    padding: 2px 16px;
+    background-color: #387ef5;
+    color: white;
+}
+
+.modal-body {padding: 2px 16px;}
+
+.modal-footer {
+    padding: 2px 16px;
+    background-color: #387ef5;
+    color: white;
+}
+</style>
