@@ -16,6 +16,22 @@ angular.module('app', ['ionic', 'cardsmodule', 'app.controllers', 'app.routes', 
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
+
+    //online or offline validator
+
+    function updateOnlineStatus(){
+        var line = navigator.onLine ? 'online' : 'offline';
+        
+        if(line != 'online'){
+            alert('No tienes conexion a internet');
+            navigator.app.exitApp();
+        }
+    }
+    
+    window.addEventListener('offline',  updateOnlineStatus)
+
+    updateOnlineStatus()
+
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {

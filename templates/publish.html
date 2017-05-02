@@ -26,18 +26,17 @@
         <label class="item item-input item-select">
             <span class="input-label">Categoria</span>
                 <div >
-                  
                     <select class="form-control" style="height: 100%;border: none;border-bottom: 1px solid #b8b8b8;border-right: 1px solid #b8b8b8;" id="category">
                         <option value=""></option>
-                        <option ng:repeat="cat in categories" value="{{cat.id}}">{{cat.Txt_Categoria}}</option>
+                        <option ng:repeat="cat in categories" value="{{cat.Id}}">{{cat.Txt_Categoria}}</option>
                     </select>
                 </div>
             </span>
         </label>
       
         <label class="item item-input item-stacked-label">
-          <ion-item style="border: none;" class="range range-positive" id="publish-range5">Estado del producto
-
+          <ion-item style="border: none;padding: 0;" class="range range-positive" id="publish-range5">
+            Estado del producto
             <div class=col-md-12>
                 <div ng:repeat="rating in ratings">
                     <div star-rating rating-value="rating.current" max="rating.max" ng:click="catchRating(rating)" on-rating-selected="getSelectedRating(rating)"></div> <span>{{rating.current}} /
@@ -49,32 +48,16 @@
         </label>
 
         <label class="item item-input item-stacked-label">
-          
-          <span class="input-label">Regalar</span>
-
-          <div class="switch" style="margin: 0 0 0 196px;">
+          <div class="switch">
               <label>
-                No
-                <input type="checkbox" ng:model="give" >
+                <b class="input-label">Intercambiar</b>
+                <input type="checkbox" name="give" ng:model="give"  ng:change="onChanged(give)">
                 <span class="lever"></span>
-                Sí
+                <b class="input-label">Regalar</b>
               </label>
             </div>
-        </label>
         </label>
         
-        <label class="item item-input item-stacked-label">
-          <span class="input-label">Intercambiar</span>
-
-          <div class="switch" style="margin: 0 0 0 196px;">
-              <label>
-                No
-                <input type="checkbox" disabled ng:checked="!give" >
-                <span class="lever"></span>
-                Sí
-              </label>
-            </div>
-        </label>
       </div>
 
       <ez-alert></ez-alert>
@@ -84,36 +67,8 @@
         <button id="publish-button16" style="margin: 0 0 50px 0;" class="button button-positive  button-block" ng:click="saveData()">Guardar</button>
       </div>
 
-
-
     </form>
-
-    <script id="my-modal.html" type="text/ng-template">
-      <ion-modal-view>
-        <ion-header-bar class="bar bar-header bar-positive">
-          <h1 class="title">Agregar Imagen</h1>
-          <button class="button button-clear button-primary" ng-click="modal.hide()">Cancel</button>
-        </ion-header-bar>
-        <ion-content class="padding">
-          <div class="list">
-            <label class="item item-input">
-              <span class="input-label">Nombre Imagen</span>
-              <input ng-model="newUser.firstName" type="text">
-            </label>
-            <label class="item item-input">
-              <span class="input-label">Last Name</span>
-              <input ng-model="newUser.lastName" type="text">
-            </label>
-            <label class="item item-input">
-              <span class="input-label">Email</span>
-              <input ng-model="newUser.email" type="text">
-            </label>
-            <button class="button button-full button-positive" ng-click="createContact(newUser)">Agregar</button>
-          </div>
-        </ion-content>
-      </ion-modal-view>
-    </script>
-
+    
   </ion-content>
 </ion-view>
 

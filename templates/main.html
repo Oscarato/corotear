@@ -5,7 +5,7 @@
         <div class="col s12">
           <ul class="tabs" style="z-index: 1;">
             <li class="tab col s3"><a ng:click="coroteo = false" class="active"  style="color: white;">Coroteo</a></li>
-            <li class="tab col s3"><a ng:click="coroteo = true"   style="color: white;">Corotié</a></li>
+            <li class="tab col s3"><a ng:click="coroteo = true;corotie_call()" style="color: white;">Corotié</a></li>
           </ul>
         </div>
         <!-- Coroteo -->
@@ -17,17 +17,16 @@
                 <div class="row" style="background: #e2e4e7;" ng:repeat="coroto in myCorotos">
                     <div class="col s12" >
                         <div class="col s6" style="text-align: center; ">
-                            <img width="100" src="{{coroto.image}}" ng:click="selecImg(coroto)">
+                            <img width="100" src="{{coroto.images.split(' ')[0]}}" ng:click="selecImg(coroto)">
                         </div>
 
                         <div class="col s6">
                             <label for="icon_telephone">Nombre: {{coroto.name}}</label><br>
-                            <label for="icon_telephone">Descripcion: {{coroto.description}}</label><br>
+                            <label for="icon_telephone">Propietario: {{coroto.nombre}}</label><br>
                             <label for="icon_telephone">Estado: Sin confirmar</label>
                         </div>
                     </div>
                 </div>
-
             </div>
 
         </div>
@@ -39,17 +38,20 @@
                 <div class="row" style="background: #e2e4e7;" ng:repeat="pro in myProductos track by $index" >
                     <div class="col s12">
                         <div class="col s6" style="text-align: center; ">
-                            <img width="100" src="{{pro.Images[0]}}">
+                            <img width="100" src="{{pro.Images.split(' ')[0]}}">
                             <label for="icon_telephone">Nombre: {{pro.Name}}</label><br>
                             <label for="icon_telephone">Descripcion: {{pro.Detail}}</label><br>
+                            <label for="icon_telephone">Interesado: {{pro.Nombre}}</label><br>
+                            
                         </div>
-
+                        <!--
                         <div class="col s6">
                             <div class="chip" ng:repeat="int in pro.interesed" ng:click="show_modal('myModal', int)">
                               <img src="{{int.picture}}" alt="Contact Person">
                               {{int.name}}
                             </div>
                         </div>
+                        -->
                     </div>
                 </div>
                 
