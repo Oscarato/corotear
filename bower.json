@@ -20,7 +20,7 @@
   ],
   "dependencies": {
     "hello":"1.14.1",
-    "ngCordova": "0.1.27",
+    "ngCordova": "0.1.27-alpha",
     "ng-cordova-oauth": "^0.3.0",
     "x2js": "abdmob/x2js"
   }
