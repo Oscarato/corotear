@@ -98,19 +98,26 @@ angular.module('app.controllers', [])
 
     $scope.login_goo =  function() {
         
-        window.plugins.googleplus.login(
-            {
-            'scopes': 'profile', // optional, space-separated list of scopes, If not included or empty, defaults to `profile` and `email`. 
-            'webClientId': '1093647862720-up1mugptg2bq49h2pab5pj5s4dkmtj7c.apps.googleusercontent.com', // optional clientId of your Web application from Credentials settings of your project - On Android, this MUST be included to get an idToken. On iOS, it is not required. 
-            'offline': true, // optional, but requires the webClientId - if set to true the plugin will also return a serverAuthCode, which can be used to grant offline access to a non-Google server 
-            },
-            function (obj) {
-            alert(JSON.stringify(obj)); // do something useful instead of alerting 
-            },
-            function (msg) {
-            alert('error: ' + msg);
-            }
-        );
+        var provider = new firebase.auth.GoogleAuthProvider();
+        provider.addScope('https://www.googleapis.com/auth/plus.login');
+
+        firebase.auth().signInWithPopup(provider).then(function(result) {
+            // This gives you a Google Access Token. You can use it to access the Google API.
+            var token = result.credential.accessToken;
+            // The signed-in user info.
+            var user = result.user;
+            localStorage.email = user;
+        // ...
+        }).catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            // The email of the user's account used.
+            var email = error.email;
+            // The firebase.auth.AuthCredential type that was used.
+            var credential = error.credential;
+            // ...
+        });
 
     }
     
@@ -123,36 +130,82 @@ angular.module('app.controllers', [])
     };
     updateCounter();
 
+    //**
+     /* Login con Google
+     /* Funcionando para moviles
+    */
+
     $scope.googleSignIn = function() {
+
         $ionicLoading.show({
             template: 'Ingresando...'
         });
 
         window.plugins.googleplus.login(
-            {
-                'webClientId': '1093647862720-up1mugptg2bq49h2pab5pj5s4dkmtj7c.apps.googleusercontent.com', // optional - clientId of your Web application from Credentials settings of your project - On Android, this MUST be included to get an idToken. On iOS, it is not required.
-                'offline': true
-            },
+            {},
             function (user_data) {
-
-                localStorage.gmailLogin = "true";
-                localStorage.facebookLogin = "false";
-                localStorage.userId = user_data.userId;
-                localStorage.email = user_data.email;
-                localStorage.name = user_data.displayName;
-                localStorage.picture = user_data.imageUrl;
-                localStorage.accessToken = user_data.accessToken;
-
+                data = user_data;
                 
-                alert(JSON.stringify(user_data)); 
-                return $location.path('Page/inicio');
-                $ionicLoading.hide();
+                localStorage.accessToken = data.userId
+
+                //traemos las categorias
+                var settings = {
+                    "crossDomain": true,
+                    "url": url_base.api+"?op=Login",
+                    "method": "POST",
+                    "headers": {
+                        "content-type": "text/xml",
+                        "cache-control": "no-cache"
+                    },
+                    "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <Login xmlns=\"http://tempuri.org/\">\r\n      <Email>"+data.email+"</Email>\r\n   <photo>"+data.imageUrl+"</photo>\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n    </Login>\r\n  </soap12:Body>\r\n</soap12:Envelope"
+                }
+
+                $ionicLoading.show({
+                    template: 'Cargando...'
+                });
+
+                $http(settings).then(function(data_login){
+                    
+                    data_login_change = JSON.parse(data_login.data.split('<')[0]);
+                    data_login_change = data_login_change[0];
+                    
+                    if(!data_login_change.id_city || data_login_change.id_city == 0 || data_login_change.id_city == ''){
+                        localStorage.updateProfile = true;
+                        localStorage.id = data_login_change.Id;
+                        localStorage.email = data.email;
+                        localStorage.picture = data.imageUrl;
+                        $location.path('Page/page12');
+                        return;
+                    }
+
+                    localStorage.updateProfile = false;
+                    localStorage.gmailLogin = "true";
+                    localStorage.facebookLogin = "false";
+                    localStorage.email = data.email;
+                    localStorage.picture = data.imageUrl;
+                    localStorage.id = data_login_change.Id;
+                    localStorage.name = data_login_change.Nombre
+                    localStorage.lastname = data_login_change.Apellido
+                    localStorage.id_city = data_login_change.id_city
+                    localStorage.phone = data_login_change.Phone
+                    localStorage.description = data_login_change.descripcion
+
+                    $location.path('Page/inicio');
+
+                    return $ionicLoading.hide();
+                }, function(err){
+                    $ionicLoading.hide();
+                    alert(JSON.stringify( err));
+                    EzAlert.error('Ocurrio un error en el logueo.');
+                }); 
+
             },
             function (msg) {
-                alert(JSON.stringify(msg)); 
                 $ionicLoading.hide();
             }
         );
+
+        $ionicLoading.hide();
     };
 
     //**
@@ -325,7 +378,7 @@ angular.module('app.controllers', [])
                 "content-type": "text/xml",
                 "cache-control": "no-cache"
             },
-            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <GetProducts xmlns=\"http://tempuri.org/\">\r\n   <Token>asdfasdf</Token>\r\n      <Id_user>3</Id_user>\r\n      <id_category>"+categories_selected.join(", ")+"</id_category>\r\n      <id_user>"+localStorage.id+"</id_user>\r\n    </GetProducts>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
+            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <GetProducts xmlns=\"http://tempuri.org/\">\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n      <Id_user>"+localStorage.id+"</Id_user>\r\n      <id_category>"+categories_selected.join(", ")+"</id_category>\r\n    </GetProducts>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
         }
 
         $ionicLoading.show({
@@ -798,7 +851,7 @@ angular.module('app.controllers', [])
         var settings = {
             "async": true,
             "crossDomain": true,
-            "url": "http://corotear.azurewebsites.net/Corotear.asmx?op=Actualizar",
+            "url": url_base.api+"?op=Actualizar",
             "method": "POST",
             "headers": {
                 "content-type": "text/xml",
@@ -821,7 +874,7 @@ angular.module('app.controllers', [])
         var settings = {
         "async": true,
         "crossDomain": true,
-        "url": "http://corotear.azurewebsites.net/Corotear.asmx?op=Actualizar",
+        "url": url_base.api+"?op=Actualizar",
         "method": "POST",
         "headers": {
             "content-type": "text/xml",
@@ -977,15 +1030,15 @@ angular.module('app.controllers', [])
         }
 
         var settings = {
-        "async": true,
-        "crossDomain": true,
-        "url": url_base.api+"?op=updateProfile",
-        "method": "POST",
-        "headers": {
-            "content-type": "text/xml",
-            "cache-control": "no-cache"
-        },
-        "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <updateProfile xmlns=\"http://tempuri.org/\">\r\n      <id>"+localStorage.id+"</id>\r\n      <Nombre>"+data_send.name+"</Nombre>\r\n      <Apellido>"+data_send.lastName+"</Apellido>\r\n      <Phone>"+data_send.phone+"</Phone>\r\n      <id_city>"+data_send.city+"</id_city>\r\n       <descripcion>"+data_send.description+"</descripcion>\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n    </updateProfile>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
+            "async": true,
+            "crossDomain": true,
+            "url": url_base.api+"?op=updateProfile",
+            "method": "POST",
+            "headers": {
+                "content-type": "text/xml",
+                "cache-control": "no-cache"
+            },
+            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <updateProfile xmlns=\"http://tempuri.org/\">\r\n      <id>"+localStorage.id+"</id>\r\n      <Nombre>"+data_send.name+"</Nombre>\r\n      <Apellido>"+data_send.lastName+"</Apellido>\r\n      <Phone>"+data_send.phone+"</Phone>\r\n      <id_city>"+data_send.city+"</id_city>\r\n       <descripcion>"+data_send.description+"</descripcion>\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n    </updateProfile>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
         }
 
         $http(settings).then(function(data_get){
