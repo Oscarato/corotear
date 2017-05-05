@@ -4,9 +4,9 @@
 
       <div class="row">
           
-        <div class="col s12" style="height: 380px;overflow: scroll;margin: 2px;border: 1px solid #bbddf9;">
+        <div class="col s12" style="height: 320px;overflow: scroll;margin: 2px;border: 1px solid #bbddf9;">
 
-            <div class="input-field col s6" ng:repeat="cat in categories">
+            <div class="input-field col s6" ng:repeat="cat in categories  | orderBy:'Txt_Categoria':false">
                 <div class="card">
                     <div class="card-image waves-effect waves-block waves-light">
                         <!--<img class="activator" width="30" src="img/categorias/tecnology.png">-->
@@ -25,6 +25,8 @@
 
       </div>
 
+      <ez-alert></ez-alert>
+      
       <div class="row">
         <div class="col s12" style ="position: absolute;">
             <a class="btn blue" style="margin: 0 0 40px 0;" ng:click="search()">Buscar</a>

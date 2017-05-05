@@ -1,29 +1,29 @@
 <ion-view title="main" hide-nav-bar="true" id="page11" >
     <ion-content padding="true" class="manual-ios-statusbar-padding">
-        <h2 id="main-heading5" class="blue-text text-darken-2 center-align">Mis Corotos</h2>
+        <h3 id="main-heading5" class="blue-text text-darken-2 center-align">Mis Corotos</h3>
         
         <div class="col s12">
           <ul class="tabs" style="z-index: 1;">
-            <li class="tab col s3"><a ng:click="coroteo = false" class="active"  style="color: white;">Coroteo</a></li>
-            <li class="tab col s3"><a ng:click="coroteo = true;corotie_call()" style="color: white;">Corotié</a></li>
+            <li class="tab col s3"><a ng:click="coroteo = false;coroteo_call()" class="active"  style="color: white;">Corotíe</a></li>
+            <li class="tab col s3"><a ng:click="coroteo = true;corotie_call()" style="color: white;">Coroteando</a></li>
           </ul>
         </div>
         <!-- Coroteo -->
         <div id="test1" class="col s12" ng:show="!coroteo">
-            <h4>Coroteo</h4>
+            <h4>Corotíe</h4>
 
             <div style="overflow: hidden;overflow-y: scroll; overflow-x: hidden; height: 330px;">
 
                 <div class="row" style="background: #e2e4e7;" ng:repeat="coroto in myCorotos">
                     <div class="col s12" >
                         <div class="col s6" style="text-align: center; ">
-                            <img width="100" src="{{coroto.images.split(' ')[0]}}" ng:click="selecImg(coroto)">
+                            <img width="100" height="130" src="{{coroto.images.split(' ')[0]}}" ng:click="selecImg(coroto)">
                         </div>
 
                         <div class="col s6">
-                            <label for="icon_telephone">Nombre: {{coroto.name}}</label><br>
-                            <label for="icon_telephone">Propietario: {{coroto.nombre}}</label><br>
-                            <label for="icon_telephone">Estado: Sin confirmar</label>
+                            <p><b>Nombre:</b> {{coroto.name}}</p>
+                            <p><b>Propietario:</b> {{coroto.nombre}}</p>
+                            <p><b>Estado:</b> Sin confirmar</p>
                         </div>
                     </div>
                 </div>
@@ -32,16 +32,18 @@
         </div>
         <!-- Corotíe -->
         <div id="test2" class="col s12" ng:show="coroteo">
-            <h4>Corotié</h4>
+            <h4>Coroteando</h4>
             <div style="overflow: hidden;overflow-y: scroll; overflow-x: hidden; height: 330px;">
 
                 <div class="row" style="background: #e2e4e7;" ng:repeat="pro in myProductos track by $index" >
-                    <div class="col s12">
-                        <div class="col s6" style="text-align: center; ">
-                            <img width="100" src="{{pro.Images.split(' ')[0]}}">
-                            <label for="icon_telephone">Nombre: {{pro.Name}}</label><br>
-                            <label for="icon_telephone">Descripcion: {{pro.Detail}}</label><br>
-                            <label for="icon_telephone">Interesado: {{pro.Nombre}}</label><br>
+                    <div class="col s12" ng:click="pro.interesado > 0 ? show_intere('modal_interes', pro.Id_product):null">
+                        <div class="col s6" >
+                            <img width="100" height="130" src="{{pro.Images.split(' ')[0]}}">
+                        </div>
+                        <div class="col s6" >
+                            <p><b>Nombre:</b> {{pro.Name}}</p>
+                            <p><b>Descripcion:</b> {{pro.Detail}}</p>
+                            <p><b>Cantidad de Interesado:</b> <b>{{pro.interesado}}</b></p>
                             
                         </div>
                         <!--
@@ -57,32 +59,60 @@
                 
             </div>
         </div>
-        
 
         <!-- The Modal -->
-        <div id="myModal" class="modal_other">
+        <div id="modal_interes" class="modal_other">
             <!-- Modal content -->
             <div class="modal_other-content">
                 <div class="modal-header">
-                    <span class="close_other">&times;</span>
-                    <h5>Persona Interesada</h5>
+                    <span class="close_other" id="close_other_interes">&times;</span>
+                    <h5>Personas Interesadas</h5>
                 </div>
-                <div class="modal-body">
-                    <p> <img src="{{interesed.picture}}" width="50"  ></p>
-                    <p><b>Nombre</b>: {{interesed.name}}</p>
-                    <p><b>Descripcion</b>: {{interesed.description}}</p>
+                <div class="modal-body" style="max-height: 250px;overflow: auto">
+
+                    <div class="row" ng:repeat="interes in Interested" ng:click="show_det_inter('myModal', interes)">
+                        <div class="col s12">
+                            <div class="col s6"> <img src="{{interes.photo}}" width="50"  ></div>
+                            <div class="col s6"><b>Nombre</b>: {{interes.Nombre}}</div>
+                            <div class="col s12"><b>Descripcion</b>: {{interes.descripcion}}</div>
+                        </div>
+
+                    </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer center-align">
                     <div class="row">
                         <div class="col s12">
-                            <div class="col s6"><button class="btn red" ng:click="close_modal('myModal')">Declinar</button></div>
-                            <div class="col s6"><button class="btn" ng:click="close_modal('myModal')">Obsequiar</button></div>
+                            <button class="btn blue" ng:click="close_modal('modal_interes')">Cerrar</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
+
+        <!-- The Modal -->
+        <div id="myModal" class="modal_other">
+            <!-- Modal content -->
+            <div class="modal_other-content">
+                <div class="modal-header">
+                    <span class="close_other" id="close_other">&times;</span>
+                    <h5>Persona Interesada</h5>
+                </div>
+                <div class="modal-body">
+                    <p> <img src="{{detail_inter.photo}}" width="50"  ></p>
+                    <p><b>Nombre</b>: {{detail_inter.Nombre}}</p>
+                    <p><b>Descripcion</b>: {{detail_inter.descripcion}}</p>
+                </div>
+                <div class="modal-footer center-align">
+                    <div class="row">
+                        <button style="width: 150px" class="btn red" ng:click="declinar('myModal', detail_inter.Id_usuario )">Declinar</button>
+                    </div>
+                    <div class="row">
+                        <button style="width: 150px" class="btn" ng:click="aceptar('myModal', detail_inter.Id_usuario)">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         
   </ion-content>
 </ion-view>
@@ -155,7 +185,5 @@
 
 .modal-footer {
     padding: 2px 16px;
-    background-color: #387ef5;
-    color: white;
 }
 </style>

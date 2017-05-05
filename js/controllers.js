@@ -5,9 +5,15 @@ angular.module('app.controllers', [])
 
 })
    
-.controller('loginCtrl', function ($scope, $location, $http, $timeout,UserService, $ionicActionSheet, $state, $ionicLoading, url_base, EzAlert) {
+.controller('loginCtrl', function ($scope, $location, $http, $timeout,UserService, $ionicActionSheet, $state, $ionicLoading, url_base, EzAlert, $cordovaOauth, $rootScope) {
   
   localStorage.login = true;
+
+  //recargamos la pagina cuando cierran sesion
+  if($rootScope.close_ses == true){
+    console.log('mostrar')
+    return location.reload();
+  }
 
   if(localStorage.email){
     return $location.path('Page/inicio');
@@ -73,66 +79,20 @@ angular.module('app.controllers', [])
   /**
    * Login con Google
    */  
+    hello.init({
+        google: '1093647862720-23pht8koukq0bqvp1m4d4vs61hsalf3j.apps.googleusercontent.com'
+    }, {redirect_uri: 'http://localhost/corotear_phone/www'});
+    
+    hello.on('auth.login', function(auth) {
 
-    var googleapi = {
-        authorize: function(options) {
-            var deferred = $.Deferred();
-            //Build the OAuth consent page URL
-            var authUrl = 'https://accounts.google.com/o/oauth2/auth?' + $.param({
-                client_id: options.client_id,
-                redirect_uri: options.redirect_uri,
-                response_type: 'code',
-                scope: options.scope
-            });
+        // Call user information, for the given network
+        hello(auth.network).api('me').then(function(r) {
+            // Inject it into the container
+            alert(JSON.stringify(r))
+        });
+    });
+        
 
-            //Open the OAuth consent page in the InAppBrowser
-            var authWindow = window.open(authUrl, '_blank', 'location=no,toolbar=no');
-
-            //The recommendation is to use the redirect_uri "urn:ietf:wg:oauth:2.0:oob"
-            //which sets the authorization code in the browser's title. However, we can't
-            //access the title of the InAppBrowser.
-            //
-            //Instead, we pass a bogus redirect_uri of "http://localhost", which means the
-            //authorization code will get set in the url. We can access the url in the
-            //loadstart and loadstop events. So if we bind the loadstart event, we can
-            //find the authorization code and close the InAppBrowser after the user
-            //has granted us access to their data.
-            $(authWindow).on('loadstart', function(e) {
-                var url = e.originalEvent.url;
-                var code = /\?code=(.+)$/.exec(url);
-                var error = /\?error=(.+)$/.exec(url);
-
-                if (code || error) {
-                    //Always close the browser when match is found
-                    authWindow.close();
-                }
-
-                if (code) {
-                    //Exchange the authorization code for an access token
-                    $.post('https://accounts.google.com/o/oauth2/token', {
-                        code: code[1],
-                        client_id: options.client_id,
-                        client_secret: options.client_secret,
-                        redirect_uri: options.redirect_uri,
-                        grant_type: 'authorization_code'
-                    }).done(function(data) {
-                        deferred.resolve(data);
-
-                        $("#loginStatus").html('Name: ' + data.given_name);
-                    }).fail(function(response) {
-                        deferred.reject(response.responseJSON);
-                    });
-                } else if (error) {
-                    //The user denied access to the app
-                    deferred.reject({
-                        error: error[1]
-                    });
-                }
-            });
-
-            return deferred.promise();
-        }
-    };
     var accessToken;
     var UserData = null;
 
@@ -206,6 +166,7 @@ angular.module('app.controllers', [])
 
         openFB.init({appId: '1269683693086737'});
 
+        $ionicLoading.hide();
         openFB.login(function(data){
 
             localStorage.accessToken = data.authResponse.accessToken;
@@ -224,8 +185,8 @@ angular.module('app.controllers', [])
                             "content-type": "text/xml",
                             "cache-control": "no-cache"
                         },
-                        "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <Login xmlns=\"http://tempuri.org/\">\r\n      <Email>"+data.email+"</Email>\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n    </Login>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
-                    }                    
+                        "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <Login xmlns=\"http://tempuri.org/\">\r\n      <Email>"+data.email+"</Email>\r\n   <photo>"+'http://graph.facebook.com/' + data.id + '/picture?type=large'+"</photo>\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n    </Login>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
+                    }
 
                     $ionicLoading.show({
                         template: 'Cargando...'
@@ -245,6 +206,7 @@ angular.module('app.controllers', [])
                             return;
                         }
 
+                        localStorage.updateProfile = false;
                         localStorage.gmailLogin = "false";
                         localStorage.facebookLogin = "true";
                         localStorage.email = data.email;
@@ -267,6 +229,7 @@ angular.module('app.controllers', [])
                 },
                 error: function(err){
                     alert(JSON.stringify(err))
+                    return $ionicLoading.hide();
                 }
             });
 
@@ -294,60 +257,7 @@ angular.module('app.controllers', [])
 
 })
    
-.controller('buscarCtrl', function ($scope, $stateParams, $http, url_base, $rootScope, $location, $ionicLoading) {
-
-    var categories_selected = []
-
-    $scope.addCategory = function(value){
-
-        var del = false;
-
-        for(cat in categories_selected){
-            if(value == categories_selected[cat]){
-                 categories_selected.splice(cat,1);
-                 del = true;
-            }
-        }
-
-        if(del == false){
-            categories_selected.push(value)
-        }
-        
-    }
-
-    $scope.search = function(){
-        
-        //traemos las categorias
-        var settings = {
-            "crossDomain": true,
-            "url": url_base.api+"?op=GetProducts",
-            "method": "POST",
-            "headers": {
-                "content-type": "text/xml",
-                "cache-control": "no-cache"
-            },
-            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <GetProducts xmlns=\"http://tempuri.org/\">\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n      <Id_user>"+localStorage.id+"</Id_user>\r\n      <id_category>"+categories_selected.join(", ")+"</id_category>\r\n    </GetProducts>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
-        }
-
-        $ionicLoading.show({
-            template: 'Buscando...'
-        });
-
-        $http(settings).then(function(data){
-            $scope.products = JSON.parse(data.data.split('<')[0]);
-            $rootScope.products = {
-                Response: true,
-                Data: $scope.products
-            }
-
-            $ionicLoading.hide();
-            $location.path('Page/productos');
-        }, function(err){
-            console.log(err)
-            $ionicLoading.hide();
-        });
-        
-    }
+.controller('buscarCtrl', function ($scope, $stateParams, $http, url_base, $rootScope, $location, $ionicLoading, EzAlert ) {
 
     //traemos las categorias
     var settings = {
@@ -373,6 +283,71 @@ angular.module('app.controllers', [])
         $ionicLoading.hide();
     });   
 
+    var categories_selected = []
+
+    $scope.addCategory = function(value){
+
+        var del = false;
+
+        for(cat in categories_selected){
+            if(value == categories_selected[cat]){
+                 categories_selected.splice(cat,1);
+                 del = true;
+            }
+        }
+
+        if(del == false){
+            categories_selected.push(value)
+        }
+        
+    }
+
+    //agregar todas las categorias
+    $scope.add_all_cat = function(){
+        
+        for(cat in $scope.categories){
+            console.log(cat)
+            categories_selected.push(cat.id)
+        }
+    }
+
+    $scope.search = function(){
+        
+        if(categories_selected.length < 1){
+            return EzAlert.error('Debes seleccionar al menos una categoria');
+        }
+        //traemos las categorias
+        var settings = {
+            "crossDomain": true,
+            "url": url_base.api+"?op=GetProducts",
+            "method": "POST",
+            "headers": {
+                "content-type": "text/xml",
+                "cache-control": "no-cache"
+            },
+            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <GetProducts xmlns=\"http://tempuri.org/\">\r\n      <Token>asdfasdf</Token>\r\n      <Id_user>3</Id_user>\r\n      <id_category>"+categories_selected.join(", ")+"</id_category>\r\n    </GetProducts>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
+        }
+
+        $ionicLoading.show({
+            template: 'Buscando...'
+        });
+
+        $http(settings).then(function(data){
+            $scope.products = JSON.parse(data.data.split('<')[0]);
+            $rootScope.products = {
+                Response: true,
+                Data: $scope.products
+            }
+
+            $ionicLoading.hide();
+            $location.path('Page/productos');
+        }, function(err){
+            console.log(err)
+            $ionicLoading.hide();
+        });
+        
+    }
+
 })
    
 .controller('productosCtrl', function ($scope, $stateParams,$rootScope, $http, url_base, $ionicLoading) {
@@ -397,6 +372,9 @@ angular.module('app.controllers', [])
         }
 
         $http(req).then(function(data){
+
+            data = JSON.parse(data.data.split('<')[0]);
+            console.log(data)
             $rootScope.details = {
                 Response: true,
                 Data: {
@@ -405,9 +383,9 @@ angular.module('app.controllers', [])
                         "Images": elem.Images.split(' '),
                         "Name_product": elem.Name,
                         "Id_product":elem.Id_product,
-                        "Detail": "esta es una descripcion",
+                        "Detail": data[0].Detail,
                         "Category_name": "muebles",
-                        "Rating": elem.Rating
+                        "Rating": parseInt(data[0].Rating)
                     }
             };
 
@@ -493,7 +471,7 @@ angular.module('app.controllers', [])
         }, function(e) {
             console.dir(e);
         }, {
-            quality: 50,
+            quality: 0,
             destinationType: Camera.DestinationType.DATA_URL
         });
         
@@ -581,7 +559,7 @@ angular.module('app.controllers', [])
             $ionicLoading.hide();
             $scope.cancel('Page/page11');
         }, function(err){
-            EzAlert.error('Algo sucedio y no se pudo cargar el articulo.');
+            EzAlert.error('Algo sucedio y no se pudo cargar el articulo.'+JSON.stringify(err));
             $ionicLoading.hide();
         });
     }
@@ -589,13 +567,13 @@ angular.module('app.controllers', [])
     //traemos las categorias
     var settings = {
         "crossDomain": true,
-        "url": url_base.api+"?op=GetCategories",
+        "url": url_base.api+"?op=GetCategoriesfull",
         "method": "POST",
         "headers": {
             "content-type": "text/xml",
             "cache-control": "no-cache"
         },
-        "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n  <soap:Body>\r\n    <GetCategories xmlns=\"http://tempuri.org/\">\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n    </GetCategories>\r\n  </soap:Body>\r\n</soap:Envelope>"
+        "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n  <soap:Body>\r\n    <GetCategoriesfull xmlns=\"http://tempuri.org/\">\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n    </GetCategoriesfull>\r\n  </soap:Body>\r\n</soap:Envelope>"
     }
 
     $ionicLoading.show({
@@ -666,28 +644,31 @@ angular.module('app.controllers', [])
 
         $http(settings).then(function(response){
             $rootScope.myProductos = JSON.parse(response.data.split('<')[0]);
+            /*
+            if($rootScope.myProductos.length > 0){
+                $rootScope.myProductos[0].interesed = [
+                    {
+                        name:"Jenny Doe",
+                        picture:"http://desdeguate.com/wp-content/uploads/2011/02/cristy-mexico-2.jpg",
+                        description:"Me interesan las antiguedades",
+                        id:1
+                    },
+                    {
+                        name:"Luisa Doe",
+                        picture:"http://www.fotos-top.com/items/perfil-de-mujeres-22364.jpg",
+                        description:"Tengo una fundación para niños de estrato 0 y 1",
+                        id:2
+                    }
+                ]
+            }
+            */
             $ionicLoading.hide();
         }, function(err){
             console.log(err)
             $ionicLoading.hide();
         });
 
-        if($rootScope.myProductos){
-            $rootScope.myProductos[0].interesed = [
-                {
-                    name:"Jenny Doe",
-                    picture:"http://desdeguate.com/wp-content/uploads/2011/02/cristy-mexico-2.jpg",
-                    description:"Me interesan las antiguedades",
-                    id:1
-                },
-                {
-                    name:"Luisa Doe",
-                    picture:"http://www.fotos-top.com/items/perfil-de-mujeres-22364.jpg",
-                    description:"Tengo una fundación para niños de estrato 0 y 1",
-                    id:2
-                }
-            ]
-        }
+
     }
     
     //traemos mis corotos, las cosas que se le dieron "me gusta"
@@ -710,20 +691,46 @@ angular.module('app.controllers', [])
         console.log(err)
         $ionicLoading.hide();
     });
+
+    //traemos de nuevo las cosas que le dimos me gusta
+    $scope.coroteo_call = function(){
+
+        $ionicLoading.show({
+            template: 'Cargando...'
+        });
+
+        //traemos mis corotos, las cosas que se le dieron "me gusta"
+        var settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": url_base.api+"?op=getCoroteo",
+            "method": "POST",
+            "headers": {
+                "content-type": "text/xml",
+                "cache-control": "no-cache"
+            },
+            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <getCoroteo xmlns=\"http://tempuri.org/\">\r\n      <Id_user>"+localStorage.id+"</Id_user>\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n    </getCoroteo>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
+        }
+
+        $http(settings).then(function(response){
+            $rootScope.myCorotos = JSON.parse(response.data.split('<')[0]);
+            $ionicLoading.hide();
+        }, function(err){
+            console.log(err)
+            $ionicLoading.hide();
+        });
+    }
     
     //para controlar el modal
-    $scope.show_modal = function(id_ele, data){
+    var show_modal = function(id_ele, button){
 
         // Get the modal
         var modal = document.getElementById(id_ele);
 
         // Get the <span> element that closes the modal
-        var span = document.getElementsByClassName("close_other")[0];
+        var span = document.getElementById(button);
 
         modal.style.display = "block";
-
-        //datos
-        $scope.interesed = data;
 
         // When the user clicks on <span> (x), close the modal
         span.onclick = function() {
@@ -738,12 +745,102 @@ angular.module('app.controllers', [])
         }
     }
 
+    //id del producto
+    var id_producto = 0;
+
+    //para mostrar el modal con los interesados del producto_detalleCtrl
+    $scope.show_intere = function(id_ele, Id_product){
+
+        $ionicLoading.show({
+            template: 'Cargando...'
+        });
+
+        //traemos mis corotos, las cosas que se le dieron "me gusta"
+        var settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": url_base.api+"?op=interesados",
+            "method": "POST",
+            "headers": {
+                "content-type": "text/xml",
+                "cache-control": "no-cache",
+                "postman-token": "e03d065d-47dd-db52-c8e9-cfb94ecf180c"
+        },
+            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <interesados xmlns=\"http://tempuri.org/\">\r\n      <Id_user>"+localStorage.id+"</Id_user>\r\n      <Idtra>"+Id_product+"</Idtra>\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n    </interesados>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
+        }
+
+        $http(settings).then(function(response){
+            $scope.Interested = JSON.parse(response.data.split('<')[0]);
+            id_producto = Id_product;
+            show_modal(id_ele, 'close_other_interes')
+            $ionicLoading.hide();
+        }, function(err){
+            console.log(err)
+            $ionicLoading.hide();
+        });
+    }
+
+    //para ver el detalle del interesado
+    $scope.show_det_inter = function(id_ele, data){
+        $scope.detail_inter = data;
+        show_modal(id_ele, 'close_other');
+    }
+
+    //cerramos el modal
     $scope.close_modal= function(id_ele){
         var modal = document.getElementById(id_ele);
         modal.style.display = "none";
     }
 
-    //para ir a los detalles
+    //declinar
+    $scope.declinar = function(id_modal, Id_usuario){
+        
+        var settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": "http://corotear.azurewebsites.net/Corotear.asmx?op=Actualizar",
+            "method": "POST",
+            "headers": {
+                "content-type": "text/xml",
+                "cache-control": "no-cache"
+        },
+        "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <Actualizar xmlns=\"http://tempuri.org/\">\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n      <Id_interesado>"+Id_usuario+"</Id_interesado>\r\n      <Id_producto>"+id_producto+"</Id_producto>\r\n      <Decision>4</Decision>\r\n      <Id_pro_chan>0</Id_pro_chan>\r\n    </Actualizar>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
+        }
+
+        $http(settings).then(function(response){
+            location.reload();
+            $ionicLoading.hide();
+        }, function(err){
+            console.log(err)
+            $ionicLoading.hide();
+        });
+    }
+
+    //aceptar
+    $scope.aceptar = function(id_modal, Id_usuario){
+        var settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": "http://corotear.azurewebsites.net/Corotear.asmx?op=Actualizar",
+        "method": "POST",
+        "headers": {
+            "content-type": "text/xml",
+            "cache-control": "no-cache"
+        },
+        "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <Actualizar xmlns=\"http://tempuri.org/\">\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n      <Id_interesado>"+Id_usuario+"</Id_interesado>\r\n      <Id_producto>"+id_producto+"</Id_producto>\r\n      <Decision>3</Decision>\r\n      <Id_pro_chan>0</Id_pro_chan>\r\n    </Actualizar>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
+        }
+
+        $http(settings).then(function(response){
+            websocket.send('{"id_user": "'+Id_usuario+'", "message": "Han aceptado tu solicitud!!!"}');
+            location.reload();
+            $ionicLoading.hide();
+        }, function(err){
+            console.log(err)
+            $ionicLoading.hide();
+        });
+    }
+
+    //para ir a los detalles del producto, esto es para los articulos que se le dio me gusta
     var images;
     var Rating;
 
@@ -813,8 +910,6 @@ angular.module('app.controllers', [])
         city: localStorage.id_city
     }
 
-    console.log(localStorage)
-
     $ionicLoading.show({
         template: 'Cargando...'
     });
@@ -848,29 +943,34 @@ angular.module('app.controllers', [])
 
         if(!profile.name){
             EzAlert.error('Debes agreagar el nombre');
+            $ionicLoading.hide();
             return;
         }
         if(!profile.lastname){
             EzAlert.error('Debes agreagar el apellido');
+            $ionicLoading.hide();
             return;
         }
         if(!profile.phone){
             EzAlert.error('Debes agreagar un teléfono');
+            $ionicLoading.hide();
             return;
         }
         if(!profile.description){
             EzAlert.error('Debes agreagar una descripción');
+            $ionicLoading.hide();
             return;
         }
         if(!profile.city){
             EzAlert.error('Debes agreagar una ciudad');
+            $ionicLoading.hide();
             return;
         }
 
         var data_send = {
             id: localStorage.id,
             name : profile.name,
-            lastName : profile.lastName,
+            lastName : profile.lastname,
             phone : profile.phone,
             description : profile.description,
             city : profile.city,
@@ -885,7 +985,7 @@ angular.module('app.controllers', [])
             "content-type": "text/xml",
             "cache-control": "no-cache"
         },
-        "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <updateProfile xmlns=\"http://tempuri.org/\">\r\n      <id>"+data_send.id+"</id>\r\n      <Nombre>"+data_send.name+"</Nombre>\r\n      <Apellido>"+data_send.lastName+"</Apellido>\r\n      <Phone>"+data_send.phone+"</Phone>\r\n      <id_city>"+data_send.city+"</id_city>\r\n       <descripcion>"+data_send.description+"</descripcion>\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n    </updateProfile>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
+        "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <updateProfile xmlns=\"http://tempuri.org/\">\r\n      <id>"+localStorage.id+"</id>\r\n      <Nombre>"+data_send.name+"</Nombre>\r\n      <Apellido>"+data_send.lastName+"</Apellido>\r\n      <Phone>"+data_send.phone+"</Phone>\r\n      <id_city>"+data_send.city+"</id_city>\r\n       <descripcion>"+data_send.description+"</descripcion>\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n    </updateProfile>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
         }
 
         $http(settings).then(function(data_get){
@@ -916,6 +1016,7 @@ angular.module('app.controllers', [])
         $ionicLoading.show({
             template: 'Cerrando...'
         });
+        $rootScope.close_ses = true;
         localStorage.clear();
         $location.path('login');
         $ionicLoading.hide();

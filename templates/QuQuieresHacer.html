@@ -1,9 +1,26 @@
 <ion-view title="¿Qué quieres hacer?" hide-nav-bar="true" id="page6" >
   <ion-content padding="true" class="manual-ios-statusbar-padding">
-    <h2 id="QuQuieresHacer-heading2" class="blue-text text-darken-2 center-align">¿Qué Quieres Hacer?</h2>
-    <div class="spacer" style="height: 40px;"></div>
-    <div class="spacer" style="height: 40px;"></div>
-    <a ui-sref="tabsController.publish" id="QuQuieresHacer-button5" class="button button-positive  button-block">Regalar / Intercambiar</a>
-    <a ui-sref="tabsController.buscar" id="QuQuieresHacer-button6" class="button button-positive  button-block">Buscar</a>
+    <h3 id="QuQuieresHacer-heading2" class="blue-text text-darken-2 center-align">¿Qué Quieres Hacer?</h3>
+    
+    <div style="text-align: center">
+      <p><label style="font-style: italic;">Regalar / Intercambiar</label></p>
+      <img src="img/regalar.jpg" width="100" ui-sref="tabsController.publish" id="QuQuieresHacer-button5">
+      
+
+      <p><label style="font-style: italic;">Buscar</label></p>
+      <img src="img/buscar.jpg" width="150"  ui-sref="tabsController.buscar" id="QuQuieresHacer-button6">
+
+    </div>
+    
   </ion-content>
 </ion-view>
+
+<style>
+  label{
+    font-size: 29px !important;
+  }
+
+  p{
+    margin: 0 !important;
+  }
+</style>

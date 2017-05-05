@@ -1,18 +1,23 @@
 <ion-view title="publish" hide-nav-bar="true" id="page10" >
-  <ion-content padding="true" class="manual-ios-statusbar-padding">
-    <h2 id="profile-heading6" class="blue-text text-darken-2 center-align">Subir Un Producto</h2>
+  <ion-content class="manual-ios-statusbar-padding">
+    <h5 id="profile-heading6" class="blue-text text-darken-2 center-align">Regala o Intercambia</h5>
 
     <form>
       <div class="list">
 
         <label class="item item-input item-stacked-label" style="padding:0" >
-            <span class="input-label">Capturar Imagenes</span><br><br>
-            <button class="btn" id="addPicture">Presiona aquí</button>
+            
+            <div style="text-align: center">
+              <span class="input-label">Capturar Imagenes</span><br>
+              <img src="img/camera.png" width="100" style="margin: 7px" id="addPicture">
+            </div>
+
             <!-- images here -->
             <div id="images">
               <div style="display: inline-block;padding: 2px;margin: 2px" ng:repeat="im in images_up"><img src="{{im}}" width="50"></div>
             </div>
         </label>
+        
         <br>
         <label class="item item-input item-stacked-label">
           <span class="input-label">¿Qué es?</span>
@@ -28,7 +33,7 @@
                 <div >
                     <select class="form-control" style="height: 100%;border: none;border-bottom: 1px solid #b8b8b8;border-right: 1px solid #b8b8b8;" id="category">
                         <option value=""></option>
-                        <option ng:repeat="cat in categories" value="{{cat.Id}}">{{cat.Txt_Categoria}}</option>
+                        <option ng:repeat="cat in categories | orderBy:'Txt_Categoria':false" value="{{cat.Id}}">{{cat.Txt_Categoria}}</option>
                     </select>
                 </div>
             </span>

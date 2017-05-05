@@ -99,8 +99,8 @@ module.directive("items",
 
                 });
             },
-            controller: ["$scope", "$http", "$rootScope",
-                function($scope, $http, $rootScope) {
+            controller: ["$scope", "$http", "$rootScope", "$ionicLoading", "EzAlert",
+                function($scope, $http, $rootScope, $ionicLoading, EzAlert ) {
                     
                     $scope.likedElements = [];
 
@@ -116,14 +116,13 @@ module.directive("items",
                     console.log($scope.elements)
 
                     $scope.likeElement= function(){
-
+                        
                         //add elements to stack of liked elements
                         var got_element = $scope.elements.pop();
-                        
-                        //$rootScope.myCorotos.push(got_element);
-                        $scope.likedElements.push(got_element);
-                        //ad remove from normal
-                        $scope.getData();
+
+                        $ionicLoading.show({
+                            template: 'Enviando...'
+                        });
 
                         //aqui vamos a enviar la desicion al servidor
                         var settings = {
@@ -135,21 +134,35 @@ module.directive("items",
                                 "content-type": "text/xml",
                                 "cache-control": "no-cache"
                             },
-                            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <selection xmlns=\"http://tempuri.org/\">\r\n      <Idpro>"+got_element.Id_product+"</Idpro>\r\n      <id_user>"+localStorage.id+"</id_user>\r\n      <Decision>1</Decision>\r\n      <Id_pro_chan>0</Id_pro_chan>\r\n      <Status_tra>1</Status_tra>\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n    </selection>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
+                            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <selection xmlns=\"http://tempuri.org/\">\r\n      <Idpro>"+got_element.Id_product+"</Idpro>\r\n      <id_user>"+localStorage.id+"</id_user>\r\n      <Decision>1</Decision>\r\n      <Id_pro_chan>0</Id_pro_chan>\r\n     <Token>"+localStorage.accessToken+"</Token>\r\n    </selection>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
                         }
 
+                        $http(settings).then(function(data){
+                            
+                            //$rootScope.myCorotos.push(got_element);
+                            $scope.likedElements.push(got_element);
+                            //ad remove from normal
+                            $scope.getData();
+
+                            $ionicLoading.hide();
+                        }, function(err){
+                            console.log(err)
+                            $ionicLoading.hide();
+                            EzAlert.error('Ocurrio un error enviando la información');
+                        });
+
                         $.ajax(settings).done(function (response) {
-                            console.log(response);
+
                         });
                     };
 
                     $scope.dislikeElement= function(){
                         //add elements to stack of liked elements
                         var got_element = $scope.elements.pop();
-                        $scope.dislikedElements.push(got_element);
-                        //ad remove from normal
-    
-                        $scope.getData();
+
+                        $ionicLoading.show({
+                            template: 'Enviando...'
+                        });
 
                         //aqui vamos a enviar la desicion al servidor
                         var settings = {
@@ -161,11 +174,20 @@ module.directive("items",
                                 "content-type": "text/xml",
                                 "cache-control": "no-cache"
                             },
-                            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n  <soap:Body>\r\n    <selection xmlns=\"http://tempuri.org/\">\r\n      <Idpro>"+got_element.Id_product+"</Idpro>\r\n      <id_user>"+localStorage.id+"</id_user>\r\n      <Decision>0</Decision>\r\n      <Id_pro_chan>0</Id_pro_chan>\r\n      <Status_tra>0</Status_tra>\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n    </selection>\r\n  </soap:Body>\r\n</soap:Envelope>"
+                            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n  <soap:Body>\r\n    <selection xmlns=\"http://tempuri.org/\">\r\n      <Idpro>"+got_element.Id_product+"</Idpro>\r\n      <id_user>"+localStorage.id+"</id_user>\r\n      <Decision>2</Decision>\r\n      <Id_pro_chan>0</Id_pro_chan>\r\n     <Token>"+localStorage.accessToken+"</Token>\r\n    </selection>\r\n  </soap:Body>\r\n</soap:Envelope>"
                         }
 
-                        $.ajax(settings).done(function (response) {
-                            console.log(response);
+                        $http(settings).then(function(data){
+                            
+                            $scope.dislikedElements.push(got_element);
+                            //ad remove from normal
+                            $scope.getData();
+
+                            $ionicLoading.hide();
+                        }, function(err){
+                            console.log(err)
+                            $ionicLoading.hide();
+                            EzAlert.error('Ocurrio un error enviando la información');
                         });
                     };
 
