@@ -325,7 +325,7 @@ angular.module('app.controllers', [])
                 "content-type": "text/xml",
                 "cache-control": "no-cache"
             },
-            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <GetProducts xmlns=\"http://tempuri.org/\">\r\n      <Token>asdfasdf</Token>\r\n      <Id_user>3</Id_user>\r\n      <id_category>"+categories_selected.join(", ")+"</id_category>\r\n    </GetProducts>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
+            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <GetProducts xmlns=\"http://tempuri.org/\">\r\n   <Token>asdfasdf</Token>\r\n      <Id_user>3</Id_user>\r\n      <id_category>"+categories_selected.join(", ")+"</id_category>\r\n      <id_user>"+localStorage.id+"</id_user>\r\n    </GetProducts>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
         }
 
         $ionicLoading.show({
