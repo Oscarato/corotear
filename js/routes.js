@@ -99,6 +99,16 @@ angular.module('app.routes', [])
       }
     }
   })
+
+  .state('tabsController.producto_detalleCtrl', {
+    url:'/product_detail_corotie',
+    views:{
+      'tab3':{
+        templateUrl: 'templates/product_detail_corotie.html',
+        controller: 'producto_detalleCtrl'
+      }
+    }
+  })
   
 
 $urlRouterProvider.otherwise('/login')
