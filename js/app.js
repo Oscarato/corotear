@@ -21,6 +21,7 @@ angular.module('app', ['ionic', 'cardsmodule', 'app.controllers', 'app.routes', 
         $(document).ready(function(){
             $('.slider').slider();
             $('.slider').height('200');
+            
 
             //prueba de web socket
             var wsUri = "ws://echo.websocket.org/";
