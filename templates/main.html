@@ -18,8 +18,13 @@
 
                 <div class="row" style="background-color:white;width:auto;" ng:repeat="coroto in myCorotos">
                     <div class="col s12" >
+<<<<<<< HEAD
                         <div class="col s6" style="text-align: center; margin-left:auto; margin-right:auto; ">
                             <img width="100" src="{{coroto.images.split(' ')[0]}}" ng:click="selecImg(coroto)">
+=======
+                        <div class="col s6" style="text-align: center; ">
+                            <img width="100" height="130" ng-src="{{coroto.images.split(' ')[0]}}" onError="this.src='img/Imagen_no_disponible.jpg';" ng:click="selecImg(coroto)">
+>>>>>>> 2b81e9dfcff03ffdc74e63f66b9d68a789184641
                         </div>
 
                         <div class="col s6">
