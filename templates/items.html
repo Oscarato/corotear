@@ -11,7 +11,7 @@
 	<div ng-if="$last" class="dislike animate-show likedislike">No lo quiero!</div>
 </div>
 
-<div class="row" style="position: absolute;top: 82%;left: 26%;">
+<div ng:show="elements.length >= 1" class="row" style="position: absolute;top: 82%;left: 26%;">
 	<div class="cardcontainer">
 		<div class="col s6">
 			<button ng:click="dislikeElement('dislike')" style="background: #c00;">X</button>

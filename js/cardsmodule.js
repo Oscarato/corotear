@@ -161,10 +161,7 @@ module.directive("items",
                             $ionicLoading.hide();
                             EzAlert.error('Ocurrio un error enviando la información');
                         });
-
-                        $.ajax(settings).done(function (response) {
-
-                        });
+                        
                     };
 
                     $scope.dislikeElement = function(from_disc){
