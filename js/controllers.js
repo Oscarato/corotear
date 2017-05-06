@@ -941,17 +941,20 @@ angular.module('app.controllers', [])
         }
 
         $http(req).then(function(data){
+            
+            data = JSON.parse(data.data.split('<')[0]);
+            data = data[0];
             $rootScope.details = {
                 Response: true,
                 Data: {
                         "name_owner": "usuario de prueba",
-                        "id_user": "234",
+                        "id_user": elem.Id_user,
                         "Images": elem.images.split(' '),
                         "Name_product": elem.name,
                         "Id_product":elem.Id_product,
-                        "Detail": "esta es una descripcion",
+                        "Detail": data.Detail,
                         "Category_name": "muebles",
-                        "Rating": elem.Rating
+                        "Rating": data.Rating
                     }
             };
 
