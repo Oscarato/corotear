@@ -8,7 +8,7 @@
             <li class="tab col s3"><a ng:click="coroteo = true;corotie_call()" style="color: white;">Coroteando</a></li>
         </ul>
     </div>
-    <ion-content padding="true" class="manual-ios-statusbar-padding" style="margin-top:75px">        
+    <ion-content padding="true" class="manual-ios-statusbar-padding" style="margin-top:75px;background-color:#ededed">        
         <!-- Coroteo -->
         <div id="test1" class="col s12" ng:show="!coroteo">
             <br />
@@ -16,10 +16,15 @@
 
             <div style="overflow: hidden;overflow-y: scroll; overflow-x: hidden; height: 330px;">
 
-                <div class="row" style="background: #e2e4e7;" ng:repeat="coroto in myCorotos">
+                <div class="row" style="background-color:white;width:auto;" ng:repeat="coroto in myCorotos">
                     <div class="col s12" >
+<<<<<<< HEAD
+                        <div class="col s6" style="text-align: center; margin-left:auto; margin-right:auto; ">
+                            <img width="100" src="{{coroto.images.split(' ')[0]}}" ng:click="selecImg(coroto)">
+=======
                         <div class="col s6" style="text-align: center; ">
                             <img width="100" height="130" ng-src="{{coroto.images.split(' ')[0]}}" onError="this.src='img/Imagen_no_disponible.jpg';" ng:click="selecImg(coroto)">
+>>>>>>> 2b81e9dfcff03ffdc74e63f66b9d68a789184641
                         </div>
 
                         <div class="col s6">
@@ -39,9 +44,13 @@
             <div style="overflow: hidden;overflow-y: scroll; overflow-x: hidden; height: 330px;">
 
                 <div class="row" style="background: #e2e4e7;" ng:repeat="pro in myProductos track by $index" >
-                    <div class="col s12" ng:click="pro.interesado > 0 ? show_intere('modal_interes', pro.Id_product):null">
+                    <div class="col s12" ng:click="pro.interesado > 0 ? show_intere('modal_interes', pro.Id_product):null" >
                         <div class="col s6" >
+<<<<<<< HEAD
+                            <img width="100" src="{{pro.Images.split(' ')[0]}}">
+=======
                             <img width="100" height="130" ng-src="{{pro.Images.split(' ')[0]}}" onError="this.src='img/Imagen_no_disponible.jpg';">
+>>>>>>> 2b81e9dfcff03ffdc74e63f66b9d68a789184641
                         </div>
                         <div class="col s6" >
                             <p><b>Nombre:</b> {{pro.Name}}</p>
