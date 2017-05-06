@@ -125,8 +125,9 @@ module.directive("items",
                             whole_div.addClass("animate-like-partial");
                             whole_div.removeClass("animate-dislike-partial");
                             like_div.addClass("active");
+                            whole_div.addClass("animate-like");
                         }
-                        
+
                         //add elements to stack of liked elements
                         var got_element = $scope.elements.pop();
                         
@@ -176,11 +177,12 @@ module.directive("items",
                             dislike_div.addClass("active");
                             whole_div.addClass("animate-dislike-partial");
                             whole_div.removeClass("animate-like-partial");
+                            whole_div.addClass("animate-dislike");
                         }
-
 
                         //add elements to stack of liked elements
                         var got_element = $scope.elements.pop();
+                        
 
                         $ionicLoading.show({
                             template: 'Enviando...'

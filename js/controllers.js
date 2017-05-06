@@ -364,7 +364,7 @@ angular.module('app.controllers', [])
 
     $scope.select = [];
     $scope.show_all = true;
-    
+
     //agregar todas las categorias
     $scope.all_categories = function(){
         
@@ -549,7 +549,7 @@ angular.module('app.controllers', [])
         }, function(e) {
             console.dir(e);
         }, {
-            quality: 0,
+            quality: 20,
             destinationType: Camera.DestinationType.DATA_URL
         });
         
