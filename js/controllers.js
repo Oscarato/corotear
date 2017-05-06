@@ -330,6 +330,11 @@ angular.module('app.controllers', [])
 
     $http(settings).then(function(data){
         $scope.categories = JSON.parse(data.data.split('<')[0]);
+
+        for(cat in $scope.categories){
+            $scope.select[cat] = false;
+        }
+
         $ionicLoading.hide();
     }, function(err){
         console.log(err)
@@ -338,30 +343,50 @@ angular.module('app.controllers', [])
 
     var categories_selected = []
 
-    $scope.addCategory = function(value){
+    $scope.addCategory = function(value, index){
 
         var del = false;
 
         for(cat in categories_selected){
             if(value == categories_selected[cat]){
                  categories_selected.splice(cat,1);
+                 $scope.select.splice(cat,1);
                  del = true;
             }
         }
 
         if(del == false){
             categories_selected.push(value)
+            $scope.select[index] = true;
         }
         
     }
 
+    $scope.select = [];
+    $scope.show_all = true;
+    
     //agregar todas las categorias
-    $scope.add_all_cat = function(){
+    $scope.all_categories = function(){
         
         for(cat in $scope.categories){
             console.log(cat)
-            categories_selected.push(cat.id)
+            categories_selected.push(cat)
+            $scope.select[cat] = true;
         }
+
+        $scope.show_all = false;
+    }
+
+    //quitar todas las categorias
+    $scope.less_categories = function(){
+        
+        for(cat in $scope.categories){
+            console.log(cat)
+            categories_selected = [];
+            $scope.select[cat] = false;
+        }
+
+        $scope.show_all = true;
     }
 
     $scope.search = function(){
@@ -931,7 +956,7 @@ angular.module('app.controllers', [])
             };
 
             $ionicLoading.hide();
-            window.location = "#/Page/product_detail";
+            window.location = "#/Page/product_detail_corotie";
             return;
         }, function(err){
             $ionicLoading.hide();

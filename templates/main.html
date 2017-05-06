@@ -18,8 +18,13 @@
 
                 <div class="row" style="background-color:white;width:auto;" ng:repeat="coroto in myCorotos">
                     <div class="col s12" >
+<<<<<<< HEAD
                         <div class="col s6" style="text-align: center; margin-left:auto; margin-right:auto; ">
                             <img width="100" src="{{coroto.images.split(' ')[0]}}" ng:click="selecImg(coroto)">
+=======
+                        <div class="col s6" style="text-align: center; ">
+                            <img width="100" height="130" ng-src="{{coroto.images.split(' ')[0]}}" onError="this.src='img/Imagen_no_disponible.jpg';" ng:click="selecImg(coroto)">
+>>>>>>> 2b81e9dfcff03ffdc74e63f66b9d68a789184641
                         </div>
 
                         <div class="col s6">
@@ -41,7 +46,11 @@
                 <div class="row" style="background: #e2e4e7;" ng:repeat="pro in myProductos track by $index" >
                     <div class="col s12" ng:click="pro.interesado > 0 ? show_intere('modal_interes', pro.Id_product):null" >
                         <div class="col s6" >
+<<<<<<< HEAD
                             <img width="100" src="{{pro.Images.split(' ')[0]}}">
+=======
+                            <img width="100" height="130" ng-src="{{pro.Images.split(' ')[0]}}" onError="this.src='img/Imagen_no_disponible.jpg';">
+>>>>>>> 2b81e9dfcff03ffdc74e63f66b9d68a789184641
                         </div>
                         <div class="col s6" >
                             <p><b>Nombre:</b> {{pro.Name}}</p>
@@ -75,7 +84,7 @@
 
                     <div class="row" ng:repeat="interes in Interested" ng:click="show_det_inter('myModal', interes)">
                         <div class="col s12">
-                            <div class="col s6"> <img src="{{interes.photo}}" width="50"  ></div>
+                            <div class="col s6"> <img ng-src="{{interes.photo}}" onError="this.src='img/Imagen_no_disponible.jpg';" width="50"  ></div>
                             <div class="col s6"><b>Nombre</b>: {{interes.Nombre}}</div>
                             <div class="col s12"><b>Descripcion</b>: {{interes.descripcion}}</div>
                         </div>
@@ -102,7 +111,7 @@
                     <h5>Persona Interesada</h5>
                 </div>
                 <div class="modal-body">
-                    <p> <img src="{{detail_inter.photo}}" width="50"  ></p>
+                    <p> <img ng-src="{{detail_inter.photo}}" width="50" onError="this.src='img/Imagen_no_disponible.jpg';"  ></p>
                     <p><b>Nombre</b>: {{detail_inter.Nombre}}</p>
                     <p><b>Descripcion</b>: {{detail_inter.descripcion}}</p>
                 </div>

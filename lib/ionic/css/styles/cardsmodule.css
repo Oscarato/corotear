@@ -45,7 +45,7 @@
   box-sizing: border-box;
 }
 .slider-element span {
-  text-transform: uppercase;
+  /*text-transform: uppercase;*/
   font-size: 25px;
   font-weight: 600;
   letter-spacing: 2px;

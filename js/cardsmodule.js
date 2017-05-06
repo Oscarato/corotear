@@ -115,11 +115,21 @@ module.directive("items",
                     
                     console.log($scope.elements)
 
-                    $scope.likeElement= function(){
+                    $scope.likeElement= function(from_disc){
+                        
+                        if(from_disc){
+                            var like_div = $($(".like")[0]),
+                            dislike_div = $($(".dislike")[0]),
+                            whole_div = $($(".animate-partial")[0]);
+                            dislike_div.removeClass("active");
+                            whole_div.addClass("animate-like-partial");
+                            whole_div.removeClass("animate-dislike-partial");
+                            like_div.addClass("active");
+                        }
                         
                         //add elements to stack of liked elements
                         var got_element = $scope.elements.pop();
-
+                        
                         $ionicLoading.show({
                             template: 'Enviando...'
                         });
@@ -156,7 +166,19 @@ module.directive("items",
                         });
                     };
 
-                    $scope.dislikeElement= function(){
+                    $scope.dislikeElement = function(from_disc){
+
+                        if(from_disc){
+                            var like_div = $($(".like")[0]),
+                            dislike_div = $($(".dislike")[0]),
+                            whole_div = $($(".animate-partial")[0]);
+                            like_div.removeClass("active");
+                            dislike_div.addClass("active");
+                            whole_div.addClass("animate-dislike-partial");
+                            whole_div.removeClass("animate-like-partial");
+                        }
+
+
                         //add elements to stack of liked elements
                         var got_element = $scope.elements.pop();
 
