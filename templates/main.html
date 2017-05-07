@@ -76,11 +76,13 @@
                 </div>
                 <div class="modal-body" style="max-height: 250px;overflow: auto">
 
-                    <div class="row" ng:repeat="interes in Interested" ng:click="show_det_inter('myModal', interes)">
-                        <div class="col s12">
-                            <div class="col s6"> <img ng-src="{{interes.photo}}" onError="this.src='img/Imagen_no_disponible.jpg';" width="50"  ></div>
-                            <div class="col s6"><b>Nombre</b>: {{interes.Nombre}}</div>
-                            <div class="col s12"><b>Descripcion</b>: {{interes.descripcion}}</div>
+                    <div class="row" ng:repeat="interes in Interested" style="padding: 0;">
+                        <div class="col s12" style="padding: 0;">
+                            <div class="col s5"> <img ng-src="{{interes.photo}}" onError="this.src='img/Imagen_no_disponible.jpg';" width="50"  ></div>
+                            <div class="col s7" style="font-size: 14px;padding: 0;">
+                                <p><b>Nombre</b>: {{interes.Nombre}}</p>
+                                <p><a href="" style="color:#0c3c6b" ng:click="show_det_inter('myModal', interes)">Ver Más Información</a></p>
+                            </div>
                         </div>
 
                     </div>
@@ -130,7 +132,7 @@
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
+    padding-top: 50px; /* Location of the box */
     left: 0;
     top: 0;
     width: 100%; /* Full width */
