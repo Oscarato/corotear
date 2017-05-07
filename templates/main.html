@@ -40,7 +40,7 @@
             <div style="overflow: hidden;overflow-y: scroll; overflow-x: hidden; height: 330px;">
 
                 <div class="row" style="background: #e2e4e7;" ng:repeat="pro in myProductos track by $index" >
-                    <div class="col s12" ng:click="pro.interesado > 0 ? show_intere('modal_interes', pro.Id_product):null" >
+                    <div class="col s12" >
                         <div class="col s6" >
                             
                             <img width="100"  ng-src="{{pro.Images.split(' ')[0]}}" onError="this.src='img/Imagen_no_disponible.jpg';">
@@ -50,7 +50,7 @@
                             <p><b>Nombre:</b> {{pro.Name}}</p>
                             <p><b>Descripcion:</b> {{pro.Detail}}</p>
                             <p><b>Cantidad de Interesado:</b> <b>{{pro.interesado}}</b></p>
-                            
+                            <p ng:show="pro.interesado > 0" ng:click="show_intere('modal_interes', pro.Id_product)"><button class="btn" style="line-height: 0;padding: 0;text-transform: none;letter-spacing: 0.2px;width: 129px;height: 31px;background: #0c3c6b;">Ver Interesados</button></p>
                         </div>
                         <!--
                         <div class="col s6">
