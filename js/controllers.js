@@ -76,51 +76,10 @@ angular.module('app.controllers', [])
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));
 
-  /**
-   * Login con Google
-   */  
-    hello.init({
-        google: '1093647862720-23pht8koukq0bqvp1m4d4vs61hsalf3j.apps.googleusercontent.com'
-    }, {redirect_uri: 'http://localhost/corotear_phone/www'});
-    
-    hello.on('auth.login', function(auth) {
-
-        // Call user information, for the given network
-        hello(auth.network).api('me').then(function(r) {
-            // Inject it into the container
-            alert(JSON.stringify(r))
-        });
-    });
-        
 
     var accessToken;
     var UserData = null;
 
-    $scope.login_goo =  function() {
-        
-        var provider = new firebase.auth.GoogleAuthProvider();
-        provider.addScope('https://www.googleapis.com/auth/plus.login');
-
-        firebase.auth().signInWithPopup(provider).then(function(result) {
-            // This gives you a Google Access Token. You can use it to access the Google API.
-            var token = result.credential.accessToken;
-            // The signed-in user info.
-            var user = result.user;
-            localStorage.email = user;
-        // ...
-        }).catch(function(error) {
-            // Handle Errors here.
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            // The email of the user's account used.
-            var email = error.email;
-            // The firebase.auth.AuthCredential type that was used.
-            var credential = error.credential;
-            // ...
-        });
-
-    }
-    
     var updateCounter = function() {
         $scope.counter++;
         $timeout(updateCounter, 1000);
@@ -134,7 +93,6 @@ angular.module('app.controllers', [])
      /* Login con Google
      /* Funcionando para moviles
     */
-
     $scope.googleSignIn = function() {
 
         $ionicLoading.show({
@@ -157,7 +115,7 @@ angular.module('app.controllers', [])
                         "content-type": "text/xml",
                         "cache-control": "no-cache"
                     },
-                    "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <Login xmlns=\"http://tempuri.org/\">\r\n      <Email>"+data.email+"</Email>\r\n   <photo>"+data.imageUrl+"</photo>\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n    </Login>\r\n  </soap12:Body>\r\n</soap12:Envelope"
+                    "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <Login xmlns=\"http://tempuri.org/\">\r\n      <Email>"+data.email+"</Email>\r\n   <photo>"+data.imageUrl+"</photo>\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n    </Login>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
                 }
 
                 $ionicLoading.show({
@@ -886,7 +844,8 @@ angular.module('app.controllers', [])
         }
 
         $http(settings).then(function(response){
-            location.reload();
+            //llamamos la funcion que trae los datos de getCorotie
+            $scope.corotie_call();
             $ionicLoading.hide();
         }, function(err){
             console.log(err)
@@ -910,7 +869,8 @@ angular.module('app.controllers', [])
 
         $http(settings).then(function(response){
             websocket.send('{"id_user": "'+Id_usuario+'", "message": "Han aceptado tu solicitud!!!"}');
-            location.reload();
+            //llamamos la funcion de getCorotie
+            $scope.corotie_call();
             $ionicLoading.hide();
         }, function(err){
             console.log(err)
