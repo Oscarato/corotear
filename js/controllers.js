@@ -5,55 +5,31 @@ angular.module('app.controllers', [])
 
 })
    
-.controller('loginCtrl', function ($scope, $location, $http, $timeout,UserService, $ionicActionSheet, $state, $ionicLoading, url_base, EzAlert, $cordovaOauth, $rootScope) {
+.controller('loginCtrl', function ($scope, $location, $http, $timeout,UserService, $ionicActionSheet, $state, $ionicLoading, url_base, EzAlert, $rootScope, $ionicHistory) {
   
-  localStorage.login = true;
+    var updateCounter = function() {
+        $scope.counter++;
+        $timeout(updateCounter, 1000);
+        if(!localStorage.login){
+            localStorage.login = true;
+            location.reload();
+        }
+        if(localStorage.email){
+            return location.reload(); 
+        }
+    };
+    updateCounter();
 
   //recargamos la pagina cuando cierran sesion
   if($rootScope.close_ses == true){
-    console.log('mostrar')
-    return location.reload();
+        location.reload();
+        return;
   }
 
   if(localStorage.email){
-    return $location.path('Page/inicio');
+        $location.path('Page/inicio');
+        return;
   }
-  /**
-   * 
-   * Login with facebook
-   */
-
-  //llamado desde el boton de facebook
-  $scope.login = function(){
-
-    FB.login(function(response) {
-      if (response.authResponse) {
-
-        FB.api('/me?fields=email,name, picture', function(response) {
-          
-          console.log(JSON.stringify(response));
-          
-          localStorage.gmailLogin = "false";
-          localStorage.facebookLogin = "true";
-          localStorage.id = response.id;
-          localStorage.email = response.email;
-          localStorage.name = response.name;
-          localStorage.picture = response.picture.data.url;
-          
-          FB.getLoginStatus(function(response2) {
-            if (response2.status === 'connected') {
-              
-              localStorage.accessToken = response2.authResponse.accessToken;
-
-            }
-          });
-          //$location.path('Page/inicio');
-        });
-      } else {
-        console.log('User cancelled login or did not fully authorize.');
-      }
-    }, {scope: 'email, public_profile'});
-  } 
 
   //datos para el acceso
   window.fbAsyncInit = function() {
@@ -79,15 +55,6 @@ angular.module('app.controllers', [])
 
     var accessToken;
     var UserData = null;
-
-    var updateCounter = function() {
-        $scope.counter++;
-        $timeout(updateCounter, 1000);
-        if(localStorage.email){
-            return location.reload(); 
-        }
-    };
-    updateCounter();
 
     //**
      /* Login con Google
@@ -223,15 +190,18 @@ angular.module('app.controllers', [])
                         localStorage.email = data.email;
                         localStorage.picture = 'http://graph.facebook.com/' + data.id + '/picture?type=large';
                         localStorage.id = data_login_change.Id;
-                        localStorage.name = data_login_change.Nombre
-                        localStorage.lastname = data_login_change.Apellido
-                        localStorage.id_city = data_login_change.id_city
-                        localStorage.phone = data_login_change.Phone
-                        localStorage.description = data_login_change.descripcion
+                        localStorage.name = data_login_change.Nombre;
+                        localStorage.lastname = data_login_change.Apellido;
+                        localStorage.id_city = data_login_change.id_city;
+                        localStorage.phone = data_login_change.Phone;
+                        localStorage.description = data_login_change.descripcion;
 
-                        $location.path('Page/inicio');
-
-                        return $ionicLoading.hide();
+                        $ionicHistory.clearCache().then(function(){
+                            $ionicLoading.hide();
+                            $location.path('Page/inicio');
+                            return;
+                        });
+                         
                     }, function(err){
                         $ionicLoading.hide();
                         alert(JSON.stringify( err));
@@ -250,12 +220,6 @@ angular.module('app.controllers', [])
 })
    
 .controller('QuQuieresHacerCtrl', function ($scope, $stateParams, $location, $rootScope) {
-
-    if(localStorage.updateProfile == true || localStorage.updateProfile == 'true'){
-        $rootScope.tab = false;
-        $location.path('Page/page12');
-        return;
-    }
     
     $scope.goInterChang = function(){
         $location.path('Page/page10');
@@ -507,7 +471,7 @@ angular.module('app.controllers', [])
         }, function(e) {
             console.dir(e);
         }, {
-            quality: 20,
+            quality: 35,
             destinationType: Camera.DestinationType.DATA_URL
         });
         
@@ -649,12 +613,6 @@ angular.module('app.controllers', [])
 })
    
 .controller('mainCtrl', function ($scope, $stateParams, $rootScope, $location, url_base, $ionicLoading, $http) {
-
-    if(localStorage.updateProfile == true || localStorage.updateProfile == 'true'){
-        $location.path('Page/page12');
-        $rootScope.tab = false;
-        return;
-    }
     
     $ionicLoading.show({
         template: 'Cargando...'
@@ -680,24 +638,6 @@ angular.module('app.controllers', [])
 
         $http(settings).then(function(response){
             $rootScope.myProductos = JSON.parse(response.data.split('<')[0]);
-            /*
-            if($rootScope.myProductos.length > 0){
-                $rootScope.myProductos[0].interesed = [
-                    {
-                        name:"Jenny Doe",
-                        picture:"http://desdeguate.com/wp-content/uploads/2011/02/cristy-mexico-2.jpg",
-                        description:"Me interesan las antiguedades",
-                        id:1
-                    },
-                    {
-                        name:"Luisa Doe",
-                        picture:"http://www.fotos-top.com/items/perfil-de-mujeres-22364.jpg",
-                        description:"Tengo una fundación para niños de estrato 0 y 1",
-                        id:2
-                    }
-                ]
-            }
-            */
             $ionicLoading.hide();
         }, function(err){
             console.log(err)
@@ -807,6 +747,7 @@ angular.module('app.controllers', [])
 
         $http(settings).then(function(response){
             $scope.Interested = JSON.parse(response.data.split('<')[0]);
+            
             id_producto = Id_product;
             show_modal(id_ele, 'close_other_interes')
             $ionicLoading.hide();
@@ -846,6 +787,7 @@ angular.module('app.controllers', [])
         $http(settings).then(function(response){
             //llamamos la funcion que trae los datos de getCorotie
             $scope.corotie_call();
+            $scope.close_modal(id_modal);
             $ionicLoading.hide();
         }, function(err){
             console.log(err)
@@ -856,13 +798,13 @@ angular.module('app.controllers', [])
     //aceptar
     $scope.aceptar = function(id_modal, Id_usuario){
         var settings = {
-        "async": true,
-        "crossDomain": true,
-        "url": url_base.api+"?op=Actualizar",
-        "method": "POST",
-        "headers": {
-            "content-type": "text/xml",
-            "cache-control": "no-cache"
+            "async": true,
+            "crossDomain": true,
+            "url": url_base.api+"?op=Actualizar",
+            "method": "POST",
+            "headers": {
+                "content-type": "text/xml",
+                "cache-control": "no-cache"
         },
         "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <Actualizar xmlns=\"http://tempuri.org/\">\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n      <Id_interesado>"+Id_usuario+"</Id_interesado>\r\n      <Id_producto>"+id_producto+"</Id_producto>\r\n      <Decision>3</Decision>\r\n      <Id_pro_chan>0</Id_pro_chan>\r\n    </Actualizar>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
         }
@@ -871,6 +813,7 @@ angular.module('app.controllers', [])
             websocket.send('{"id_user": "'+Id_usuario+'", "message": "Han aceptado tu solicitud!!!"}');
             //llamamos la funcion de getCorotie
             $scope.corotie_call();
+            $scope.close_modal(id_modal);
             $ionicLoading.hide();
         }, function(err){
             console.log(err)
@@ -966,6 +909,7 @@ angular.module('app.controllers', [])
         },
         "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <GetCountries xmlns=\"http://tempuri.org/\">\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n    </GetCountries>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
     }
+
     $http(settings).then(function(data){
         
         $ionicLoading.hide();

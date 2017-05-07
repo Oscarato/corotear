@@ -28,6 +28,9 @@
                             <p><b>Propietario:</b> {{coroto.nombre}}</p>
                             <p><b>Estado:</b> {{coroto.estado}} </p>
                         </div>
+                        <div class="col s12 center-align">
+                            <button ng:if="coroto.estado == 'Aceptado'"  class="btn" style="line-height: 0;padding: 0;text-transform: none;letter-spacing: 0.2px;width: 129px;height: 31px;background: #0c3c6b;">Ver Contacto</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -48,9 +51,15 @@
                         </div>
                         <div class="col s6" >
                             <p><b>Nombre:</b> {{pro.Name}}</p>
-                            <p><b>Descripcion:</b> {{pro.Detail}}</p>
                             <p><b>Cantidad de Interesado:</b> <b>{{pro.interesado}}</b></p>
-                            <p ng:show="pro.interesado > 0" ng:click="show_intere('modal_interes', pro.Id_product)"><button class="btn" style="line-height: 0;padding: 0;text-transform: none;letter-spacing: 0.2px;width: 129px;height: 31px;background: #0c3c6b;">Ver Interesados</button></p>
+                        </div>
+                        <div class="col s12">
+                            <b>Descripcion: {{pro.Detail}}</p>
+                        </div>
+
+                        <div class="col s12 center-align" ng:show="pro.interesado > 0">
+                            <button ng:show="pro.estado == 'Activo'" class="btn" style="line-height: 0;padding: 0;text-transform: none;letter-spacing: 0.2px;width: 129px;height: 31px;background: #0c3c6b;">Ver Contacto</button>
+                            <button ng:if="pro.estado == 'En Espera'"  ng:click="show_intere('modal_interes', pro.Id_product)" class="btn" style="line-height: 0;padding: 0;text-transform: none;letter-spacing: 0.2px;width: 129px;height: 31px;background: #0c3c6b;">Ver Interesados</button>
                         </div>
                         <!--
                         <div class="col s6">
@@ -90,7 +99,7 @@
                 <div class="modal-footer center-align">
                     <div class="row">
                         <div class="col s12">
-                            <button class="btn blue" ng:click="close_modal('modal_interes')">Cerrar</button>
+                            <button class="btn blue" style="background:#0c3c6b" ng:click="close_modal('modal_interes')">Cerrar</button>
                         </div>
                     </div>
                 </div>
@@ -111,12 +120,16 @@
                     <p><b>Nombre</b>: {{detail_inter.Nombre}}</p>
                     <p><b>Descripcion</b>: {{detail_inter.descripcion}}</p>
                 </div>
-                <div class="modal-footer center-align">
-                    <div class="row">
-                        <button style="width: 150px" class="btn red" ng:click="declinar('myModal', detail_inter.Id_usuario )">Declinar</button>
-                    </div>
-                    <div class="row">
-                        <button style="width: 150px" class="btn" ng:click="aceptar('myModal', detail_inter.Id_usuario)">Aceptar</button>
+                <div class="modal-footer">
+                    <div class="row" style="margin: 0 0 0 32px;">
+                        <div class="cardcontainer">
+                            <div class="col s6">
+                                <button ng:click="declinar('myModal', detail_inter.Id_interesado )" style="background: #c00;">X</button>
+                            </div>
+                            <div class="col s6">
+                                <button ng:click="aceptar('myModal', detail_inter.Id_interesado)">✔</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -193,6 +206,18 @@
 
 .modal-footer {
     padding: 2px 16px;
+}
+
+.cardcontainer button{
+	background: #0c0;
+    border: none;
+    color: #fff;
+    border-radius: 50% 50%;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    margin: 0 .5em;
+    display: inline-block;
 }
 
 </style>
