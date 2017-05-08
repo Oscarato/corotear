@@ -31,7 +31,7 @@
                             <p ng:if="coroto.estado != 'Aceptado' && coroto.estado != 'Rechazado' && coroto.estado != 'Entregado'" ><b>Estado:</b> {{coroto.estado}} </p>
                         </div>
                         <div class="col s12 center-align">
-                            <button ng:if="coroto.estado == 'Aceptado'" ng:click="getContact('myModalFull', coroto.Id_interesado, false)"  class="btn" style="line-height: 0;padding: 0;text-transform: none;letter-spacing: 0.2px;width: 129px;height: 31px;background: #0c3c6b;">Ver Contacto</button>
+                            <button ng:if="coroto.estado == 'Aceptado'" ng:click="getContact('myModalFull', coroto.Id_interesado, false)"  class="btn" style="margin:8px;line-height: 0;padding: 0;text-transform: none;letter-spacing: 0.2px;width: 129px;height: 31px;background: #0c3c6b;">Ver Contacto</button>
                         </div>
                     </div>
                 </div>
@@ -61,8 +61,8 @@
 
                         <div class="col s12 center-align" ng:show="pro.interesado > 0">
                             <p ng:if="pro.estado == 'Aceptado' || pro.estado == 'Entregado'" ><b >Estado:</b> <a style="color: green">{{pro.estado}}</a> </p>
-                            <button ng:show="pro.estado == 'Aceptado' || pro.estado == 'Entregado'" ng:click="getContact('myModalFull', pro.Id_usuario, true, pro.Id_product, pro.estado)" class="btn" style="line-height: 0;padding: 0;text-transform: none;letter-spacing: 0.2px;width: 129px;height: 31px;background: #0c3c6b;">Ver Contacto</button>
-                            <button ng:if="pro.estado == 'En Espera'"  ng:click="show_intere('modal_interes', pro.Id_product)" class="btn" style="line-height: 0;padding: 0;text-transform: none;letter-spacing: 0.2px;width: 129px;height: 31px;background: #0c3c6b;">Ver Interesados</button>
+                            <button ng:show="pro.estado == 'Aceptado' || pro.estado == 'Entregado'" ng:click="getContact('myModalFull', pro.Id_usuario, true, pro.Id_product, pro.estado)" class="btn" style="margin:8px;line-height: 0;padding: 0;text-transform: none;letter-spacing: 0.2px;width: 129px;height: 31px;background: #0c3c6b;">Ver Contacto</button>
+                            <button ng:if="pro.estado == 'En Espera' || pro.estado == 'Activo'"  ng:click="show_intere('modal_interes', pro.Id_product)" class="btn" style="margin:8px; line-height: 0;padding: 0;text-transform: none;letter-spacing: 0.2px;width: 129px;height: 31px;background: #0c3c6b;">Ver Interesados</button>
                         </div>
                         <!--
                         <div class="col s6">

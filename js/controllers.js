@@ -71,8 +71,10 @@ angular.module('app.controllers', [])
                 
                 localStorage.accessToken = data.userId
 
+                alert(JSON.stringify( data));
                 //traemos las categorias
                 var settings = {
+                    "async": true,
                     "crossDomain": true,
                     "url": url_base.api+"?op=Login",
                     "method": "POST",
@@ -80,7 +82,7 @@ angular.module('app.controllers', [])
                         "content-type": "text/xml",
                         "cache-control": "no-cache"
                     },
-                    "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <Login xmlns=\"http://tempuri.org/\">\r\n      <Email>"+data.email+"</Email>\r\n   <photo>"+data.imageUrl+"</photo>\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n    </Login>\r\n  </soap12:Body>\r\n</soap12:Envelope"
+                    "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <Login xmlns=\"http://tempuri.org/\">\r\n      <Email>"+data.email+"</Email>\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n      <photo>"+data.imageUrl+"</photo>\r\n    </Login>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
                 }
 
                 $ionicLoading.show({
@@ -214,20 +216,26 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('QuQuieresHacerCtrl', function ($scope, $stateParams, $location, $rootScope) {
+.controller('QuQuieresHacerCtrl', function ($scope, $stateParams, $location, $rootScope,  $ionicHistory,  $state) {
+    
+    $ionicHistory.nextViewOptions({
+        disableBack: true
+    });
     
     $scope.goInterChang = function(){
-        $location.path('Page/page10');
-        $scope.$apply()
+        
+        $state.go('Page/page10', {}, {location: "replace", reload: true});
     }
 
     $scope.goSearch = function(){
-        $location.path('Page/buscar');
+        $state.go('Page/buscar', {}, {location: "replace", reload: true});
     }
 
 })
    
-.controller('buscarCtrl', function ($scope, $stateParams, $http, url_base, $rootScope, $location, $ionicLoading, EzAlert ) {
+.controller('buscarCtrl', function ($scope, $stateParams, $http, url_base, $rootScope, $location, $ionicLoading, EzAlert,$ionicHistory ) {
+
+
 
     //traemos las categorias
     var settings = {
@@ -258,22 +266,22 @@ angular.module('app.controllers', [])
         $ionicLoading.hide();
     });   
 
-    var categories_selected = []
+    $scope.categories_selected = []
 
     $scope.addCategory = function(value, index){
-
+        
         var del = false;
 
-        for(cat in categories_selected){
-            if(value == categories_selected[cat]){
-                 categories_selected.splice(cat,1);
-                 $scope.select.splice(cat,1);
+        for(cat in $scope.categories_selected){
+            if(value == $scope.categories_selected[cat]){
+                 $scope.categories_selected.splice(cat,1);
+                 $scope.select[cat] = false;
                  del = true;
             }
         }
 
         if(del == false){
-            categories_selected.push(value)
+            $scope.categories_selected.push(value)
             $scope.select[index] = true;
         }
         
@@ -287,7 +295,7 @@ angular.module('app.controllers', [])
         
         for(cat in $scope.categories){
             console.log(cat)
-            categories_selected.push(cat)
+            $scope.categories_selected.push(cat)
             $scope.select[cat] = true;
         }
 
@@ -299,7 +307,7 @@ angular.module('app.controllers', [])
         
         for(cat in $scope.categories){
             console.log(cat)
-            categories_selected = [];
+            $scope.categories_selected = [];
             $scope.select[cat] = false;
         }
 
@@ -308,7 +316,7 @@ angular.module('app.controllers', [])
 
     $scope.search = function(){
         
-        if(categories_selected.length < 1){
+        if($scope.categories_selected.length < 1){
             return EzAlert.error('Debes seleccionar al menos una categoria');
         }
         //traemos las categorias
@@ -320,7 +328,7 @@ angular.module('app.controllers', [])
                 "content-type": "text/xml",
                 "cache-control": "no-cache"
             },
-            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <GetProducts xmlns=\"http://tempuri.org/\">\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n      <Id_user>"+localStorage.id+"</Id_user>\r\n      <id_category>"+categories_selected.join(", ")+"</id_category>\r\n    </GetProducts>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
+            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <GetProducts xmlns=\"http://tempuri.org/\">\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n      <Id_user>"+localStorage.id+"</Id_user>\r\n      <id_category>"+$scope.categories_selected.join(", ")+"</id_category>\r\n    </GetProducts>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
         }
 
         $ionicLoading.show({
@@ -403,7 +411,13 @@ angular.module('app.controllers', [])
 
 })
    
-.controller('publishCtrl', function ($scope, $ionicModal, EzAlert, $location, $rootScope, url_base, $http, $ionicLoading) {
+.controller('publishCtrl', function ($scope, $ionicModal, EzAlert, $location, $rootScope, url_base, $http, $ionicLoading, $ionicHistory) {
+
+    $ionicHistory.nextViewOptions({
+        disableBack: true
+    });
+
+    $ionicHistory.clearHistory();
 
     //variables
     var images;
@@ -514,7 +528,7 @@ angular.module('app.controllers', [])
     $scope.saveData = function(){
 
         if($scope.images_up.length < 1){
-           // return EzAlert.error('Por favor adjunta alguna imagen del articulo.');
+           return EzAlert.error('Por favor adjunta alguna imagen del articulo.');
         }
         
         var data = {
@@ -527,6 +541,25 @@ angular.module('app.controllers', [])
             give: ($scope.give == true || $scope.give == 'true' || $scope.give == 1) ? 1:0,
             change: this.give == 1 ? 0:1,
             Token: localStorage.token
+        }
+
+        //validaciones
+        if(data.Name == ''){
+            EzAlert.error('Debes agregar un nombre');
+            $ionicLoading.hide();
+            return;
+        }
+
+        if(data.Detail == ''){
+            EzAlert.error('Debes agreagar la información de detalle');
+            $ionicLoading.hide();
+            return;
+        }
+
+        if(!data.id_category || data.id_category == ''){
+            EzAlert.error('Debes escoger una categoria');
+            $ionicLoading.hide();
+            return;
         }
         
         $ionicLoading.show({
@@ -576,7 +609,7 @@ angular.module('app.controllers', [])
     });
 
     $http(settings).then(function(data){
-        console.log(data)
+        
         $ionicLoading.hide();
         $scope.categories = JSON.parse(data.data.split('<')[0]);
     }, function(err){
@@ -607,8 +640,14 @@ angular.module('app.controllers', [])
     }
 })
    
-.controller('mainCtrl', function ($scope, $stateParams, $rootScope, $location, url_base, $ionicLoading, $http) {
+.controller('mainCtrl', function ($scope, $stateParams, $rootScope, $location, url_base, $ionicLoading, $http, $ionicHistory) {
     
+    $ionicHistory.nextViewOptions({
+        disableBack: true
+    });
+
+    $ionicHistory.clearHistory();
+
     $ionicLoading.show({
         template: 'Cargando...'
     });

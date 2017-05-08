@@ -22,7 +22,7 @@
                         <span >{{cat.Txt_Categoria}}</span>
                         <p>
                             <image ng-src="{{cat.imagen}}" onError="this.src='img/Imagen_no_disponible.jpg';"  style="width:50px"></image>
-                            <input ng:click="addCategory(cat.Id)" ng:checked="select[$index]" type="checkbox" id="test{{$index}}" />
+                            <input ng:click="addCategory(cat.Id, $index)" ng:checked="select[$index]" type="checkbox" id="test{{$index}}" />
                             <label for="test{{$index}}"></label>
                         </p>
                     </div>
