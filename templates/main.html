@@ -25,17 +25,19 @@
 
                         <div class="col s6">
                             <p><b>Nombre:</b> {{coroto.name}}</p>
-                            <p><b>Propietario:</b> {{coroto.nombre}}</p>
-                            <p><b>Estado:</b> {{coroto.estado}} </p>
+                            <p ><b>Propietario:</b> {{coroto.nombre}}</p>
+                            <p ng:if="coroto.estado == 'Aceptado' || coroto.estado == 'Entregado'" ><b >Estado:</b> <a style="color: green">{{coroto.estado}}</a> </p>
+                            <p ng:if="coroto.estado == 'Rechazado'" ><b>Estado:</b> <a style="color: red">{{coroto.estado}}</a> </p>
+                            <p ng:if="coroto.estado != 'Aceptado' && coroto.estado != 'Rechazado' && coroto.estado != 'Entregado'" ><b>Estado:</b> {{coroto.estado}} </p>
                         </div>
                         <div class="col s12 center-align">
-                            <button ng:if="coroto.estado == 'Aceptado'"  class="btn" style="line-height: 0;padding: 0;text-transform: none;letter-spacing: 0.2px;width: 129px;height: 31px;background: #0c3c6b;">Ver Contacto</button>
+                            <button ng:if="coroto.estado == 'Aceptado'" ng:click="getContact('myModalFull', coroto.Id_interesado, false)"  class="btn" style="line-height: 0;padding: 0;text-transform: none;letter-spacing: 0.2px;width: 129px;height: 31px;background: #0c3c6b;">Ver Contacto</button>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
+
         <!-- Corotíe -->
         <div id="test2" class="col s12" ng:show="coroteo">
             <br />
@@ -58,7 +60,8 @@
                         </div>
 
                         <div class="col s12 center-align" ng:show="pro.interesado > 0">
-                            <button ng:show="pro.estado == 'Activo'" class="btn" style="line-height: 0;padding: 0;text-transform: none;letter-spacing: 0.2px;width: 129px;height: 31px;background: #0c3c6b;">Ver Contacto</button>
+                            <p ng:if="pro.estado == 'Aceptado' || pro.estado == 'Entregado'" ><b >Estado:</b> <a style="color: green">{{pro.estado}}</a> </p>
+                            <button ng:show="pro.estado == 'Aceptado' || pro.estado == 'Entregado'" ng:click="getContact('myModalFull', pro.Id_usuario, true, pro.Id_product, pro.estado)" class="btn" style="line-height: 0;padding: 0;text-transform: none;letter-spacing: 0.2px;width: 129px;height: 31px;background: #0c3c6b;">Ver Contacto</button>
                             <button ng:if="pro.estado == 'En Espera'"  ng:click="show_intere('modal_interes', pro.Id_product)" class="btn" style="line-height: 0;padding: 0;text-transform: none;letter-spacing: 0.2px;width: 129px;height: 31px;background: #0c3c6b;">Ver Interesados</button>
                         </div>
                         <!--
@@ -75,7 +78,7 @@
             </div>
         </div>
 
-        <!-- The Modal -->
+        <!-- Modal de interesados-->
         <div id="modal_interes" class="modal_other">
             <!-- Modal content -->
             <div class="modal_other-content">
@@ -135,6 +138,37 @@
             </div>
         </div>
         
+        <!-- The Modal for full interesed-->
+        <div id="myModalFull" class="modal_other">
+            <!-- Modal content -->
+            <div class="modal_other-content">
+                <div class="modal-header">
+                    <span class="close_other" id="close_full_inter">&times;</span>
+                    <h5>Contacto</h5>
+                </div>
+                <div class="modal-body">
+                    <p> <img ng-src="{{fullInteresed.photo}}" width="50" onError="this.src='img/Imagen_no_disponible.jpg';"  ></p>
+                    <p><b>Nombre</b>: {{fullInteresed.Nombre}}</p>
+                    <p><b>Descripcion</b>: {{fullInteresed.descripcion}}</p>
+                    <p><b>Contacto</b>: {{fullInteresed.Email}} - {{fullInteresed.Phone}}</p>
+                </div>
+                <div class="modal-footer center-align">
+                    <div class="row" ng:show="showBtn">
+                            <div class="col s12">
+                                <button class="btn" ng:if="owner" style="background:#0c3c6b" ng:click="completed('myModalFull', fullInteresed.Id, id_product)">Entregado</button>
+
+                            </div>                           
+                    </div>
+                    <div class="row">
+                            <div class="col s12">
+                                <button class="btn blue"  ng:click="close_modal('myModalFull')">Cerrar</button>
+
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
   </ion-content>
 </ion-view>
 

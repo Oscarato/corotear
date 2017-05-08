@@ -757,6 +757,71 @@ angular.module('app.controllers', [])
         });
     }
 
+    //mostramos los datos del inresado
+    $scope.getContact = function(id_ele, Id_user, owner, id_product, status){
+
+        $ionicLoading.show({
+            template: 'Cargando...'
+        });
+
+        $scope.showBtn = status == 'Aceptado' ? true:false;
+
+        $scope.owner = owner;
+
+        //traemos mis corotos, las cosas que se le dieron "me gusta"
+        var settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": url_base.api+"?op=getinteresado",
+            "method": "POST",
+            "headers": {
+                "content-type": "text/xml",
+                "cache-control": "no-cache",
+                "postman-token": "e03d065d-47dd-db52-c8e9-cfb94ecf180c"
+        },
+            "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <getinteresado xmlns=\"http://tempuri.org/\">\r\n      <Id_interesado>"+Id_user+"</Id_interesado>\r\n    </getinteresado>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
+        }
+
+        $http(settings).then(function(response){
+            $scope.fullInteresed = JSON.parse(response.data.split('<')[0]);
+            $scope.fullInteresed = $scope.fullInteresed[0];
+            $scope.id_product = id_product;
+            show_modal(id_ele, 'close_full_inter')
+            $ionicLoading.hide();
+        }, function(err){
+            console.log(err)
+            $ionicLoading.hide();
+        });
+    }
+
+    //funcion que permite cambiar el estado de la transaccion a finalizada o entrega
+    $scope.completed = function(id_modal, Id_usuario, Id_product){
+        
+        confirm("¿Confirmar que ya se entrego el producto?");
+
+        var settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": url_base.api+"?op=Actualizar",
+            "method": "POST",
+            "headers": {
+                "content-type": "text/xml",
+                "cache-control": "no-cache"
+        },
+        "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <Actualizar xmlns=\"http://tempuri.org/\">\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n      <Id_interesado>"+Id_usuario+"</Id_interesado>\r\n      <Id_producto>"+Id_product+"</Id_producto>\r\n      <Decision>5</Decision>\r\n      <Id_pro_chan>0</Id_pro_chan>\r\n    </Actualizar>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
+        }
+
+        $http(settings).then(function(response){
+            //llamamos la funcion que trae los datos de getCorotie
+            $scope.corotie_call();
+            $scope.close_modal(id_modal);
+            $ionicLoading.hide();
+        }, function(err){
+            console.log(err)
+            $ionicLoading.hide();
+        });
+    }
+
     //para ver el detalle del interesado
     $scope.show_det_inter = function(id_ele, data){
         $scope.detail_inter = data;
@@ -814,6 +879,7 @@ angular.module('app.controllers', [])
             //llamamos la funcion de getCorotie
             $scope.corotie_call();
             $scope.close_modal(id_modal);
+            $scope.close_modal('modal_interes');
             $ionicLoading.hide();
         }, function(err){
             console.log(err)
