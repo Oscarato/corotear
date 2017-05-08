@@ -5,31 +5,19 @@ angular.module('app.controllers', [])
 
 })
    
-.controller('loginCtrl', function ($scope, $location, $http, $timeout,UserService, $ionicActionSheet, $state, $ionicLoading, url_base, EzAlert, $rootScope, $ionicHistory) {
+.controller('loginCtrl', function ($scope, $location, $http, $timeout,UserService, $ionicActionSheet, $state, $ionicLoading, url_base, EzAlert, $cordovaOauth, $rootScope) {
   
-    var updateCounter = function() {
-        $scope.counter++;
-        $timeout(updateCounter, 1000);
-        if(!localStorage.login){
-            localStorage.login = true;
-            location.reload();
-        }
-        if(localStorage.email){
-            return location.reload(); 
-        }
-    };
-    updateCounter();
+  localStorage.login = true;
 
   //recargamos la pagina cuando cierran sesion
   if($rootScope.close_ses == true){
-        location.reload();
-        return;
+    return location.reload();
   }
 
   if(localStorage.email){
-        $location.path('Page/inicio');
-        return;
+    return $location.path('Page/inicio');
   }
+  
 
   //datos para el acceso
   window.fbAsyncInit = function() {
@@ -51,15 +39,25 @@ angular.module('app.controllers', [])
     js.src = "//connect.facebook.net/en_US/sdk.js";
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));
-
+  
 
     var accessToken;
     var UserData = null;
+    
+    var updateCounter = function() {
+        $scope.counter++;
+        $timeout(updateCounter, 1000);
+        if(localStorage.email){
+            return location.reload(); 
+        }
+    };
+    updateCounter();
 
     //**
      /* Login con Google
      /* Funcionando para moviles
     */
+
     $scope.googleSignIn = function() {
 
         $ionicLoading.show({
@@ -82,7 +80,7 @@ angular.module('app.controllers', [])
                         "content-type": "text/xml",
                         "cache-control": "no-cache"
                     },
-                    "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <Login xmlns=\"http://tempuri.org/\">\r\n      <Email>"+data.email+"</Email>\r\n   <photo>"+data.imageUrl+"</photo>\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n    </Login>\r\n  </soap12:Body>\r\n</soap12:Envelope>"
+                    "data": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\r\n  <soap12:Body>\r\n    <Login xmlns=\"http://tempuri.org/\">\r\n      <Email>"+data.email+"</Email>\r\n   <photo>"+data.imageUrl+"</photo>\r\n      <Token>"+localStorage.accessToken+"</Token>\r\n    </Login>\r\n  </soap12:Body>\r\n</soap12:Envelope"
                 }
 
                 $ionicLoading.show({
@@ -190,18 +188,15 @@ angular.module('app.controllers', [])
                         localStorage.email = data.email;
                         localStorage.picture = 'http://graph.facebook.com/' + data.id + '/picture?type=large';
                         localStorage.id = data_login_change.Id;
-                        localStorage.name = data_login_change.Nombre;
-                        localStorage.lastname = data_login_change.Apellido;
-                        localStorage.id_city = data_login_change.id_city;
-                        localStorage.phone = data_login_change.Phone;
-                        localStorage.description = data_login_change.descripcion;
+                        localStorage.name = data_login_change.Nombre
+                        localStorage.lastname = data_login_change.Apellido
+                        localStorage.id_city = data_login_change.id_city
+                        localStorage.phone = data_login_change.Phone
+                        localStorage.description = data_login_change.descripcion
 
-                        $ionicHistory.clearCache().then(function(){
-                            $ionicLoading.hide();
-                            $location.path('Page/inicio');
-                            return;
-                        });
-                         
+                        $location.path('Page/inicio');
+
+                        return $ionicLoading.hide();
                     }, function(err){
                         $ionicLoading.hide();
                         alert(JSON.stringify( err));
@@ -218,7 +213,7 @@ angular.module('app.controllers', [])
     }
 
 })
-   
+
 .controller('QuQuieresHacerCtrl', function ($scope, $stateParams, $location, $rootScope) {
     
     $scope.goInterChang = function(){
