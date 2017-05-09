@@ -412,12 +412,7 @@ angular.module('app.controllers', [])
 })
    
 .controller('publishCtrl', function ($scope, $ionicModal, EzAlert, $location, $rootScope, url_base, $http, $ionicLoading, $ionicHistory) {
-
-    $ionicHistory.nextViewOptions({
-        disableBack: true
-    });
-
-    $ionicHistory.clearHistory();
+    
 
     //variables
     var images;
@@ -585,6 +580,11 @@ angular.module('app.controllers', [])
             $rootScope.myProductos.push(data);
             EzAlert.success('Articulo cargado correctamente.');
             $ionicLoading.hide();
+            $ionicHistory.nextViewOptions({
+                disableBack: true
+            });
+
+            $ionicHistory.clearHistory();
             $scope.cancel('Page/page11');
         }, function(err){
             EzAlert.error('Algo sucedio y no se pudo cargar el articulo.'+JSON.stringify(err));
@@ -655,6 +655,9 @@ angular.module('app.controllers', [])
     //traemos los que se corotio o lo que se publico
     $scope.corotie_call = function(){
         
+        $scope.select_corotie = true;
+        $scope.select_coroteo = false;
+
         $ionicLoading.show({
             template: 'Cargando...'
         });
@@ -677,10 +680,12 @@ angular.module('app.controllers', [])
             console.log(err)
             $ionicLoading.hide();
         });
-
-
     }
     
+    //varialbes de clases seleccion
+    $scope.select_corotie = false;
+    $scope.select_coroteo = true;
+
     //traemos mis corotos, las cosas que se le dieron "me gusta"
     var settings = {
         "async": true,
@@ -705,6 +710,9 @@ angular.module('app.controllers', [])
     //traemos de nuevo las cosas que le dimos me gusta
     $scope.coroteo_call = function(){
 
+        $scope.select_corotie = false;
+        $scope.select_coroteo = true;
+        
         $ionicLoading.show({
             template: 'Cargando...'
         });
@@ -849,6 +857,7 @@ angular.module('app.controllers', [])
             //llamamos la funcion que trae los datos de getCorotie
             $scope.corotie_call();
             $scope.close_modal(id_modal);
+            $scope.close_modal('modal_interes');
             $ionicLoading.hide();
         }, function(err){
             console.log(err)

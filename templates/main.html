@@ -1,14 +1,14 @@
 <ion-view title="main" hide-nav-bar="true" id="page11" >
     <div style="background-color:#0054a6; height:70px">
-        <h3 id="main-heading5" class="text-darken-2 center-align" style="color:white; padding-top:10px">Mis Corotos</h3>
+        <h3 id="main-heading5" class="text-darken-2 center-align"  style="color:white; padding-top:10px">Mis Corotos</h3>
     </div>
     <div style="width:100% ;background-color:#0054a6; height:40px">
         <ul class="tabs" style="z-index: 1;">
-            <li class="tab col s3"><a ng:click="coroteo = false;coroteo_call()" class="active" style="color: white;">Corotíe</a></li>
-            <li class="tab col s3"><a ng:click="coroteo = true;corotie_call()" style="color: white;">Coroteando</a></li>
+            <li class="tab col s3" ng:class="{true:'actived', false:''}[select_coroteo]"><a ng:click="coroteo = false;coroteo_call()" class="active" style="color: white;">Corotíe</a></li>
+            <li class="tab col s3" ng:class="{true:'actived', false:''}[select_corotie]"><a ng:click="coroteo = true;corotie_call()" style="color: white;">Coroteando</a></li>
         </ul>
     </div>
-    <ion-content padding="true" class="manual-ios-statusbar-padding" style="margin-top:75px;background-color:#ededed">        
+    <ion-content padding="true" class="manual-ios-statusbar-padding"  style="margin-top:75px;background-color:#ededed">        
         <!-- Coroteo -->
         <div id="test1" class="col s12" ng:show="!coroteo">
             <br />
@@ -173,6 +173,11 @@
 </ion-view>
 
 <style>
+
+.actived {
+    background: red;
+    color: white;
+}
 
 /* The Modal (background) */
 .modal_other {
