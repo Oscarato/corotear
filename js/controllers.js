@@ -69,9 +69,8 @@ angular.module('app.controllers', [])
             function (user_data) {
                 data = user_data;
                 
-                localStorage.accessToken = data.userId
+                localStorage.accessToken = data.userId;
 
-                alert(JSON.stringify( data));
                 //traemos las categorias
                 var settings = {
                     "async": true,
