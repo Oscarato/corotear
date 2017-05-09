@@ -1,5 +1,10 @@
 angular.module('app.controllers', [])
-     
+
+.config(function($ionicConfigProvider, $sceDelegateProvider, $httpProvider){
+    $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
+
+})
+
 .controller('menuCtrl', function ($scope, $stateParams) {
 
 
@@ -92,7 +97,7 @@ angular.module('app.controllers', [])
                     
                     data_login_change = JSON.parse(data_login.data.split('<')[0]);
                     data_login_change = data_login_change[0];
-                    
+
                     if(!data_login_change.id_city || data_login_change.id_city == 0 || data_login_change.id_city == ''){
                         localStorage.updateProfile = true;
                         localStorage.id = data_login_change.Id;
