@@ -3,6 +3,7 @@
     <h2 id="profile-heading6" style="margin: 0;font-size: 40px;" class="blue-text text-darken-2 center-align">Tu Perfíl</h2>
 
       <div class="list">
+        <!-- formulario de datos para el perfil del usuario-->
         <form name="profile" method="post">
           <div style="text-align: center;margin: 0 0 90px 0;" >
             <ion-list id="profile-list10">
@@ -10,6 +11,7 @@
             </ion-list>
           </div>
 
+          <!-- mensaje de notificacion-->
           <ez-alert></ez-alert>
 
           <label class="item item-input item-stacked-label">
@@ -42,8 +44,10 @@
             <textarea max="200" ng:model="data_profile.description" id="description" style="margin: 0px -5px 0px 0px; width: 319px; height: 74px;" placeholder="Esta es tu descripción como persona, lo que las personas deben saber de tí, para que regales o te regalen un producto"></textarea>
           </label>
 
+          <!-- mensaje de notificacion-->
           <ez-alert></ez-alert>
 
+          <!-- botones para guardar los datos o cerrar sesion-->
           <div id="publish-button-bar4"  class="button-bar">
             <button id="publish-button16" style="font-size: 20px;" class="button button-positive  button-block" ng:click="profile_update(data_profile)">Guardar</button>
           </div>

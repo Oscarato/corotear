@@ -1,16 +1,18 @@
+<!--esto es para avisar que ya no hay mas articulos -->
 <div ng:click="window.location = '#/Page/page10'" ng:show="elements.length == 1" style="position: absolute;top: 60px;padding: 60px;z-index:0;display: block !important;">
 	<h5>Ya no hay más elementos, te invitamos a subir algún articulo para <b>intercambiar</b> o si quieres los puedes <b>obsequiar</b></h5><br>
 	<a href="#Page/page10" ><i class="large material-icons">input</i></a>
 </div>
 
+<!-- aqui van los productos para dar like o dislike-->
 <div ng:show="elements.length >= 1" ng-repeat="element in elements track by $index" style="z-index: 999999;" ng-class="{'animate-partial':$last, 'animate':$last, 'display-rotation-0-deg':$last, 'display-rotation-1-deg' : $first, 'display-rotation-2-deg': $middle}" class="slider-element">
-	<!--.image-container(ng-style="{'background-image': 'url(\'' + element.image + '\')'}")-->
 	<div ng-style="{'background-image':'url('+element.Images.split(' ')[0]+')'}" ng:click="selecImg(element)" class="image-container"></div>
 	<span>{{element.Name.charAt(0).toUpperCase() + element.Name.slice(1);}}</span>
 	<div ng-if="$last" class="like animate-show likedislike">Lo quiero! </div>
 	<div ng-if="$last" class="dislike animate-show likedislike">No lo quiero!</div>
 </div>
 
+<!-- botones para dar like o dislike -->
 <div ng:show="elements.length >= 1" class="row" style="position: absolute;top: 82%;left: 26%;">
 	<div class="cardcontainer">
 		<div class="col s6">
@@ -21,23 +23,22 @@
 		</div>
 	</div>
 </div>
-	
 
-
+<!-- notificaciones -->
 <ez-alert></ez-alert>
 
 <style>
 	
-.cardcontainer button{
-	background: #0c0;
-    border: none;
-    color: #fff;
-    border-radius: 50% 50%;
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
-    margin: 0 .5em;
-    display: inline-block;
-}
+	.cardcontainer button{
+		background: #0c0;
+		border: none;
+		color: #fff;
+		border-radius: 50% 50%;
+		width: 40px;
+		height: 40px;
+		line-height: 40px;
+		margin: 0 .5em;
+		display: inline-block;
+	}
 
 </style>

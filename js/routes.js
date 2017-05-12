@@ -1,5 +1,6 @@
 angular.module('app.routes', [])
 
+//** Aqui van las rutas de la aplicacion */
 .config(function($stateProvider, $urlRouterProvider) {
 
   // Ionic uses AngularUI Router which uses the concept of states
@@ -8,18 +9,21 @@ angular.module('app.routes', [])
   // Each state's controller can be found in controllers.js
   $stateProvider
 
+  //aqui se declara la ruta principal (Page) para la manipulacion con el menu bajo
   .state('tabsController', {
     url: '/Page',
     templateUrl: 'templates/tabsController.html',
     abstract:true
   })
 
+  //ruta de login
   .state('login', {
     url: '/login',
     templateUrl: 'templates/login.html',
     controller: 'loginCtrl'
   })
 
+  //ruta de ¿que quieres hacer?
   .state('tabsController.QuQuieresHacer', {
     url: '/inicio',
     views: {
@@ -30,6 +34,7 @@ angular.module('app.routes', [])
     }
   })
 
+  //ruta de buscar
   .state('tabsController.buscar', {
     url: '/buscar',
     views: {
@@ -40,6 +45,7 @@ angular.module('app.routes', [])
     }
   })
 
+  //ruta de los productos con vista tinder
   .state('tabsController.productos', {
     url: '/productos',
     views: {
@@ -50,6 +56,7 @@ angular.module('app.routes', [])
     }
   })
 
+  //ruta de los detalles del producto
   .state('tabsController.producto_detalle', {
     url: '/product_detail',
     views: {
@@ -60,6 +67,7 @@ angular.module('app.routes', [])
     }
   })
 
+  //ruta para la seccion de publicar el articulo
   .state('tabsController.publish', {
     url: '/page10',
     views: {
@@ -70,6 +78,7 @@ angular.module('app.routes', [])
     }
   })
 
+  //ruta para coroteando y corotie
   .state('tabsController.main', {
     url: '/page11',
     views: {
@@ -80,6 +89,7 @@ angular.module('app.routes', [])
     }
   })
 
+  //ruta para acceder a "mi perfil"
   .state('tabsController.profile', {
     url: '/page12',
     views: {
@@ -90,6 +100,7 @@ angular.module('app.routes', [])
     }
   })
 
+  //ruta de prueba para acceso
   .state('tabsController.login_access', {
     url: '/access',
     views: {
@@ -100,6 +111,7 @@ angular.module('app.routes', [])
     }
   })
 
+  //ruta para los detalles del producto desde corotie
   .state('tabsController.producto_detalleCtrl', {
     url:'/product_detail_corotie',
     views:{
@@ -110,9 +122,7 @@ angular.module('app.routes', [])
     }
   })
   
-
-$urlRouterProvider.otherwise('/login')
-
+  //redireccion en caso de no hayar la ruta
+  $urlRouterProvider.otherwise('/login');
   
-
 });

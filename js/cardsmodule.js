@@ -1,5 +1,6 @@
 var module = angular.module('cardsmodule', []);
 
+//esta directiva controla todo sobre los productos con animacion de tinder
 module.directive("items",
     function() {
         return {
@@ -64,8 +65,8 @@ module.directive("items",
 
                     if (elem.touchLast !== 0) {
                         if (Math.abs(elem.touchStart - elem.touchLast) >= pixel_threshold) {
+
                             //do nothing
-                            console.log("touchended 1 " + elem.touchLast);
                             var like_div = $($(".like")[0]),
                                 dislike_div = $($(".dislike")[0]),
                                 whole_div = $($(".animate")[0]);
@@ -75,14 +76,12 @@ module.directive("items",
                             like_div.removeClass("active");
                             dislike_div.removeClass("active");
                             if (elem.touchLast > elem.touchStart) {
-                                //elem.likeProduct()
+                                
                                 elem.likeElement();
-                                console.log("like Produkt");
                                 whole_div.addClass("animate-like");
                             } else {
+
                                 elem.dislikeElement();
-                                //elem.dislikeProduct()
-                                console.log("dislike Product");
                                 whole_div.addClass("animate-dislike");
                             }
 
@@ -94,8 +93,6 @@ module.directive("items",
                             }, 300);
                         }
                     }
-                    //window.location = "#/Page/product_detail?";
-                    console.log("touchended" + elem.touchLast);
 
                 });
             },
@@ -112,8 +109,6 @@ module.directive("items",
 
                     //se obtuvo la data del rootScope desde el controlador de buscar
                     $scope.elements = $rootScope.products.Data;
-                    
-                    console.log($scope.elements)
 
                     $scope.likeElement= function(from_disc){
                         
@@ -150,7 +145,6 @@ module.directive("items",
 
                         $http(settings).then(function(data){
                             
-                            //$rootScope.myCorotos.push(got_element);
                             $scope.likedElements.push(got_element);
                             //ad remove from normal
                             $scope.getData();

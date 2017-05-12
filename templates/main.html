@@ -2,12 +2,15 @@
     <div style="background-color:#0054a6; height:70px">
         <h3 id="main-heading5" class="text-darken-2 center-align"  style="color:white; padding-top:10px">Mis Corotos</h3>
     </div>
+    <!--menu de lseccion -->
     <div style="width:100% ;background-color:#0054a6; height:40px">
         <ul class="tabs" style="z-index: 1;">
             <li class="tab col s3" ng:class="{true:'actived', false:''}[select_coroteo]"><a ng:click="coroteo = false;coroteo_call()" class="active">Corotíe</a></li>
             <li class="tab col s3" ng:class="{true:'actived', false:''}[select_corotie]"><a ng:click="coroteo = true;corotie_call()">Coroteando</a></li>
         </ul>
     </div>
+    
+    <!--contenido general-->
     <ion-content padding="true" class="manual-ios-statusbar-padding"  style="margin-top:75px;background-color:#ededed">        
         <!-- Coroteo -->
         <div id="test1" class="col s12" ng:show="!coroteo">
@@ -64,14 +67,6 @@
                             <button ng:show="pro.estado == 'Aceptado' || pro.estado == 'Entregado'" ng:click="getContact('myModalFull', pro.Id_usuario, true, pro.Id_product, pro.estado)" class="btn" style="margin:8px;line-height: 0;padding: 0;text-transform: none;letter-spacing: 0.2px;width: 129px;height: 31px;background: #0c3c6b;">Ver Contacto</button>
                             <button ng:if="pro.estado == 'En Espera' || pro.estado == 'Activo'"  ng:click="show_intere('modal_interes', pro.Id_product)" class="btn" style="margin:8px; line-height: 0;padding: 0;text-transform: none;letter-spacing: 0.2px;width: 129px;height: 31px;background: #0c3c6b;">Ver Interesados</button>
                         </div>
-                        <!--
-                        <div class="col s6">
-                            <div class="chip" ng:repeat="int in pro.interesed" ng:click="show_modal('myModal', int)">
-                              <img src="{{int.picture}}" alt="Contact Person">
-                              {{int.name}}
-                            </div>
-                        </div>
-                        -->
                     </div>
                 </div>
                 
@@ -110,7 +105,7 @@
         </div>
 
 
-        <!-- The Modal -->
+        <!-- The Modal  de la persona interesada-->
         <div id="myModal" class="modal_other">
             <!-- Modal content -->
             <div class="modal_other-content">
@@ -138,7 +133,7 @@
             </div>
         </div>
         
-        <!-- The Modal for full interesed-->
+        <!-- The Modal de los datos completos del interesado (solo cuando el producto ya fue aceptado)-->
         <div id="myModalFull" class="modal_other">
             <!-- Modal content -->
             <div class="modal_other-content">

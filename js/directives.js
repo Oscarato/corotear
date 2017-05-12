@@ -1,9 +1,7 @@
+//declaracion del modulo de directivas
 angular.module('app.directives', [])
 
-.directive('blankDirective', [function(){
-
-}])
-
+//** esta directiva controla las estrellas para publicar articulos */
 .directive('starRating', function () {
     return {
         restrict: 'A',
@@ -44,6 +42,7 @@ angular.module('app.directives', [])
     }
 })
 
+//directiva para las notificaciones
 .directive('notification', function($timeout){
   return {
      restrict: 'E',

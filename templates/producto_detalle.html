@@ -1,5 +1,7 @@
+<!--nombre del articulo-->
 <div class="box blue" style="display: inline-flex;width: 100%;"><a href="#Page/productos" style="margin: 7px 0 0 6px;" ><i class="small material-icons" style="color: white">&#xE408;</i></a> <h5 style="text-align: center;color: white; text-transform:uppercase;margin:8px 0 0 0;width: 100%;">{{details.Data.Name_product}}</h5></div>
-  
+
+<!-- contenedor de imagenes-->
 <ion-slide-box on-slide-changed="slideHasChanged($index)">
   <ion-slide ng:repeat="dt in details.Data.Images" style="text-align: center;">
     <img style="height: 90%;width: 90%;" src="{{dt}}">
@@ -7,7 +9,7 @@
   
 </ion-slide-box>
 
-
+<!-- datos del articulo-->
 <div class="row" style="font-size: 11px;">
     <div class="col s12">
         <span style="text-transform:uppercase">{{details.Data.Name_product}}</span>
@@ -21,7 +23,6 @@
     <div class="col s12">
         <span style="text-transform:uppercase">{{details.Data.Detail}}</span>
     </div>
-
 </div>
 
 

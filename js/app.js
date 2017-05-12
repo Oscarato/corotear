@@ -14,16 +14,18 @@ angular.module('app', ['ionic', 'cardsmodule', 'app.controllers', 'app.routes', 
 
 })
 
+//** inicializamos funciones cuando se abre la app */
 .run(function($ionicPlatform) {
     $ionicPlatform.ready(function() {
 
-        //esto inicializa el slider
+        //esto inicializa el slider del login y otras funciones
         $(document).ready(function(){
             $('.slider').slider();
             $('.slider').height('200');
             
 
-            //prueba de web socket
+            //**prueba de web socket */
+            /** funcion de prueba */
             var wsUri = "ws://echo.websocket.org/";
             var output;
 
@@ -55,6 +57,8 @@ angular.module('app', ['ionic', 'cardsmodule', 'app.controllers', 'app.routes', 
                 websocket.send(message);
             }
 
+            //esta funcion se aprovecha para informar que no hay conexion a internet
+            //y cerrar la aplicacion
             function onClose(evt)
             {
                 console.log("DISCONNECTED");
@@ -63,6 +67,7 @@ angular.module('app', ['ionic', 'cardsmodule', 'app.controllers', 'app.routes', 
                
             }
 
+            //funcion de prueba para notificaciones
             function onMessage(evt)
             {
 

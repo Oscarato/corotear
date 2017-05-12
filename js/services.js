@@ -21,6 +21,7 @@ angular.module('services', [])
   };
 })
 
+//aqui modificamos la base de url para las peticiones al servidor
 .service('url_base', function() {
   return {
     route:'http://localhost/corotear_phone/www/',
